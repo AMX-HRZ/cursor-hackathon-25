@@ -4,6 +4,7 @@ import DynamicOverlay from "@/components/overlays/DynamicOverlay";
 import BusinessCard from "@/components/results/BusinessCard";
 import DigitalPassport from "@/components/results/DigitalPassport";
 import OutsourceView from "@/components/results/OutsourceView";
+import RepairGuide from "@/components/results/RepairGuide";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { RepairOption, useRepair } from "@/context/RepairContext";
+import { useRepairHistory } from "@/hooks/useRepairHistory";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -179,6 +181,7 @@ function RepairView({ imageSrc, selectedOption, overlayKey }: RepairViewProps) {
 export default function ResultPage() {
   const router = useRouter();
   const { capturedImage, analysisData, clearSession } = useRepair();
+  const { saveRepair } = useRepairHistory();
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -201,13 +204,36 @@ export default function ResultPage() {
   };
 
   const handleSaveToWardrobe = async () => {
-    if (!analysisData) return;
+    if (!analysisData || !capturedImage) return;
 
     setIsSaving(true);
+
+    // Simulate saving animation
     await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    // Save to localStorage via hook
+    const selectedOption = analysisData.options[selectedOptionIndex];
+    const profit = selectedOption.value_increase - selectedOption.cost;
+    const snakePoints = Math.round(selectedOption.value_increase * 1.5);
+
+    saveRepair({
+      img: capturedImage,
+      profit: profit,
+      optionName: selectedOption.name,
+      snakePoints: snakePoints,
+      fabric: analysisData.fabric,
+      technique: selectedOption.type,
+    });
+
     setIsSaving(false);
     setSaved(true);
     setShowDialog(true);
+  };
+
+  const handleDialogClose = () => {
+    setShowDialog(false);
+    // Redirect to profile after dialog closes
+    router.push("/profile");
   };
 
   const handleExportToMarket = () => {
@@ -261,10 +287,14 @@ export default function ResultPage() {
             >
               ANALYSIS COMPLETE
             </h1>
-            <div className="flex items-center gap-2">
-              <span className="text-[#00ff00]">✓</span>
-              <span className="text-[#666] text-xs">DONE</span>
-            </div>
+            <Link href="/profile">
+              <Button
+                variant="ghost"
+                className="text-[#00ffff] hover:text-[#00ff00] hover:bg-transparent p-0 text-xs"
+              >
+                PROFILE ▶
+              </Button>
+            </Link>
           </div>
         </header>
 
@@ -283,6 +313,18 @@ export default function ResultPage() {
               />
             ))}
           </div>
+        </div>
+
+        {/* Repair Guide - Execution Protocol */}
+        <div className="mb-6">
+          <motion.div
+            key={selectedOptionIndex}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <RepairGuide selectedOption={selectedOption} />
+          </motion.div>
         </div>
 
         {/* Main Content - Two Column Layout */}
@@ -378,26 +420,26 @@ export default function ResultPage() {
                       ✓ REPAIR SAVED
                     </DialogTitle>
                     <DialogDescription className="text-[#B0B0B0] text-center">
-                      Your repair plan has been saved to your digital wardrobe.
+                      Your repair has been archived. Snake grows +1!
                     </DialogDescription>
                   </DialogHeader>
                   <div className="text-center py-4">
                     <div className="text-6xl mb-4">🐍</div>
                     <div className="text-[#00ffff] text-xl mb-2">
-                      SNAKE SCORE: {snakeScore}
+                      +{snakeScore} XP EARNED
                     </div>
                     <div className="text-[#00ff00] text-lg mb-2">
                       PROFIT: +${profit}
                     </div>
                     <div className="text-[#666] text-xs">
-                      KEEP REPAIRING TO INCREASE YOUR SCORE!
+                      VIEW YOUR STATS ON THE PROFILE PAGE
                     </div>
                   </div>
                   <Button
-                    onClick={() => setShowDialog(false)}
+                    onClick={handleDialogClose}
                     className="w-full nokia-button bg-[#124191] hover:bg-[#00ffff] hover:text-[#0a0a0a]"
                   >
-                    CONTINUE
+                    VIEW PROFILE
                   </Button>
                 </DialogContent>
               </Dialog>

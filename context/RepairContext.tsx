@@ -23,6 +23,7 @@ export interface RepairOption {
   time: number;
   difficulty: "LOW" | "MED" | "HIGH";
   coordinates: Array<{ x: number; y: number }>;
+  steps: string[];
 }
 
 /** Analysis data structure from API */

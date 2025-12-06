@@ -19,6 +19,7 @@ export interface RepairOption {
   time: number;
   difficulty: "LOW" | "MED" | "HIGH";
   coordinates: Array<{ x: number; y: number }>;
+  steps: string[];
 }
 
 export interface AnalysisResponse {
@@ -28,6 +29,28 @@ export interface AnalysisResponse {
   timestamp: string;
   analysisId: string;
 }
+
+// ============================================
+// REPAIR PROTOCOL STEPS
+// ============================================
+const REPAIR_STEPS = {
+  basic: [
+    "Select thread matching Pantone 19-4052 (Classic Blue).",
+    "Execute darning weave: Over-Under sequence.",
+    "Trim excess. Steam press.",
+  ],
+  trend: [
+    "Chalk mark geometric grid at 5mm intervals.",
+    "Use high-contrast white sashiko thread.",
+    "Execute running stitch along the AR overlay vector.",
+  ],
+  cyber: [
+    "Align 'Snake' adhesive patch to tear coordinates.",
+    "Set iron to Cotton setting (Max).",
+    "Apply heat for 30s to bond the cyber-weave.",
+    "Reinforce edges with green embroidery floss.",
+  ],
+};
 
 // ============================================
 // DEMO DATA - Hardcoded response for demos
@@ -46,6 +69,7 @@ const DEMO_RESPONSE: AnalysisResponse = {
       time: 10,
       difficulty: "LOW",
       coordinates: generateSnakePath(320, 240, 8),
+      steps: REPAIR_STEPS.basic,
     },
     {
       id: 2,
@@ -57,6 +81,7 @@ const DEMO_RESPONSE: AnalysisResponse = {
       time: 25,
       difficulty: "MED",
       coordinates: generateSnakePath(320, 240, 12),
+      steps: REPAIR_STEPS.trend,
     },
     {
       id: 3,
@@ -68,6 +93,7 @@ const DEMO_RESPONSE: AnalysisResponse = {
       time: 5,
       difficulty: "HIGH",
       coordinates: generateSnakePath(320, 240, 16),
+      steps: REPAIR_STEPS.cyber,
     },
   ],
   timestamp: new Date().toISOString(),
@@ -158,6 +184,7 @@ function generateRepairOptions(
       time: 10,
       difficulty: "LOW",
       coordinates: generateSnakePath(320, 240, 8),
+      steps: REPAIR_STEPS.basic,
     },
     {
       id: 2,
@@ -169,6 +196,7 @@ function generateRepairOptions(
       time: 25,
       difficulty: "MED",
       coordinates: generateSnakePath(320, 240, 12),
+      steps: REPAIR_STEPS.trend,
     },
     {
       id: 3,
@@ -180,6 +208,7 @@ function generateRepairOptions(
       time: 5,
       difficulty: "HIGH",
       coordinates: generateSnakePath(320, 240, 16),
+      steps: REPAIR_STEPS.cyber,
     },
   ];
 }
@@ -269,7 +298,6 @@ export async function POST(request: NextRequest) {
     // DEMO MODE: Return hardcoded data immediately
     if (DEMO_MODE) {
       console.log("[MEND-AR] DEMO_MODE enabled, returning hardcoded response");
-      // Regenerate coordinates for fresh paths each time
       const demoData: AnalysisResponse = {
         ...DEMO_RESPONSE,
         options: DEMO_RESPONSE.options.map((opt) => ({
@@ -303,7 +331,6 @@ export async function POST(request: NextRequest) {
         analysisId: `MEND-${Date.now().toString(36).toUpperCase()}`,
       };
     } else {
-      // Fallback to demo data if AI fails
       analysisData = {
         ...DEMO_RESPONSE,
         options: DEMO_RESPONSE.options.map((opt) => ({
@@ -335,7 +362,7 @@ export async function GET() {
   return NextResponse.json({
     status: "OPERATIONAL",
     service: "MEND-AR Analysis API",
-    version: "4.0.0",
+    version: "5.0.0",
     mode: DEMO_MODE ? "DEMO_MODE" : hasOpenAI ? "AI_ENABLED" : "MOCK_MODE",
     timestamp: new Date().toISOString(),
   });
