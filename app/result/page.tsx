@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import BusinessCard from "@/components/results/BusinessCard";
+import RepairView from "@/components/results/RepairView";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,8 +11,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useRepair } from "@/context/RepairContext";
-import RepairView from "@/components/results/RepairView";
-import BusinessCard from "@/components/results/BusinessCard";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function ResultPage() {
   const router = useRouter();
@@ -55,7 +55,9 @@ export default function ResultPage() {
     return (
       <main className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="text-[#00ff00] text-xl animate-pulse mb-4">LOADING...</div>
+          <div className="text-[#00ff00] text-xl animate-pulse mb-4">
+            LOADING...
+          </div>
           <div className="text-[#666] text-sm">Retrieving analysis data</div>
         </div>
       </main>
@@ -110,23 +112,33 @@ export default function ResultPage() {
 
           {/* Analysis Details */}
           <div className="nokia-border bg-[#0a0a0a] p-4">
-            <div className="text-[#00ffff] text-sm mb-3 tracking-widest">▣ REPAIR DETAILS</div>
+            <div className="text-[#00ffff] text-sm mb-3 tracking-widest">
+              ▣ REPAIR DETAILS
+            </div>
             <div className="grid grid-cols-2 gap-4 text-xs">
               <div className="bg-[#1a1a1a] border border-[#333] p-3">
                 <span className="text-[#666] block mb-1">TECHNIQUE</span>
-                <span className="text-[#00ff00]">{analysisData.repairTechnique}</span>
+                <span className="text-[#00ff00]">
+                  {analysisData.repairTechnique}
+                </span>
               </div>
               <div className="bg-[#1a1a1a] border border-[#333] p-3">
                 <span className="text-[#666] block mb-1">STITCHES</span>
-                <span className="text-[#00ff00]">{analysisData.coordinates.length - 1}</span>
+                <span className="text-[#00ff00]">
+                  {analysisData.coordinates.length - 1}
+                </span>
               </div>
               <div className="bg-[#1a1a1a] border border-[#333] p-3">
                 <span className="text-[#666] block mb-1">DIFFICULTY</span>
-                <span className="text-[#ffaa00]">{analysisData.difficulty}</span>
+                <span className="text-[#ffaa00]">
+                  {analysisData.difficulty}
+                </span>
               </div>
               <div className="bg-[#1a1a1a] border border-[#333] p-3">
                 <span className="text-[#666] block mb-1">SNAKE SCORE</span>
-                <span className="text-[#00ffff]">{analysisData.snakeScore} ★</span>
+                <span className="text-[#00ffff]">
+                  {analysisData.snakeScore} ★
+                </span>
               </div>
             </div>
           </div>
@@ -169,7 +181,9 @@ export default function ResultPage() {
                     SNAKE SCORE: {analysisData.snakeScore}
                   </div>
                   <div className="text-[#00ff00] text-lg mb-2">
-                    VALUE INCREASE: +${analysisData.marketValueRepaired - analysisData.marketValueOriginal}
+                    VALUE INCREASE: +$
+                    {analysisData.marketValueRepaired -
+                      analysisData.marketValueOriginal}
                   </div>
                   <div className="text-[#666] text-xs">
                     KEEP REPAIRING TO INCREASE YOUR SCORE!
@@ -199,7 +213,8 @@ export default function ResultPage() {
       <footer className="mt-6 nokia-border bg-[#0a0a0a] p-4">
         <div className="flex items-center justify-between text-xs">
           <div className="text-[#666]">
-            <span className="text-[#124191]">ID:</span> {analysisData.analysisId}
+            <span className="text-[#124191]">ID:</span>{" "}
+            {analysisData.analysisId}
           </div>
           <Link href="/" className="text-[#00ffff] hover:text-[#00ff00]">
             ◀ MAIN MENU
