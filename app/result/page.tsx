@@ -1,5 +1,7 @@
 "use client";
 
+import { RepairOption } from "@/app/api/analyze/route";
+import OutsourceView from "@/components/results/OutsourceView";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -30,6 +32,11 @@ export default function ResultPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showOutsource, setShowOutsource] = useState(false);
+  const [repairOptions, setRepairOptions] = useState<RepairOption[]>([]);
+  const [selectedOption, setSelectedOption] = useState<RepairOption | null>(
+    null
+  );
 
   // Redirect if no data
   useEffect(() => {
@@ -37,6 +44,51 @@ export default function ResultPage() {
       router.push("/scan");
     }
   }, [capturedImage, analysisData, router]);
+
+  // Fetch repair options when analysis data is available
+  useEffect(() => {
+    if (!capturedImage || !analysisData) return;
+
+    const fetchOptions = async () => {
+      try {
+        const response = await fetch("/api/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image: capturedImage }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.options && Array.isArray(data.options)) {
+            setRepairOptions(data.options);
+            // Default to first option (usually the premium one)
+            if (data.options.length > 0) {
+              setSelectedOption(data.options[0]);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch repair options:", error);
+        // Use default option if fetch fails
+        const defaultOption: RepairOption = {
+          id: 1,
+          name: "PREMIUM EMBROIDERY",
+          description: "Premium decorative embroidery",
+          type: "trend",
+          cost: 20,
+          value_increase: 85,
+          time: 5,
+          difficulty: "MED",
+          coordinates: [],
+          steps: [],
+        };
+        setRepairOptions([defaultOption]);
+        setSelectedOption(defaultOption);
+      }
+    };
+
+    fetchOptions();
+  }, [capturedImage, analysisData]);
 
   const handleGenerateTechPack = async () => {
     await generateTechPack();
@@ -162,7 +214,8 @@ export default function ResultPage() {
               Repair Plan Ready
             </h1>
             <p className="text-sm font-mono-tech" style={{ color: "#6B7280" }}>
-              Your garment has been analyzed. Generate a tech pack or save to your wardrobe.
+              Your garment has been analyzed. Generate a tech pack or save to
+              your wardrobe.
             </p>
           </div>
 
@@ -216,7 +269,10 @@ export default function ResultPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div
                       className="p-4 rounded-sm"
-                      style={{ background: "#F9FAFB", border: "2px solid #E5E7EB" }}
+                      style={{
+                        background: "#F9FAFB",
+                        border: "2px solid #E5E7EB",
+                      }}
                     >
                       <span
                         className="text-[10px] font-mono-tech tracking-wider block mb-1"
@@ -233,7 +289,10 @@ export default function ResultPage() {
                     </div>
                     <div
                       className="p-4 rounded-sm"
-                      style={{ background: "#F9FAFB", border: "2px solid #E5E7EB" }}
+                      style={{
+                        background: "#F9FAFB",
+                        border: "2px solid #E5E7EB",
+                      }}
                     >
                       <span
                         className="text-[10px] font-mono-tech tracking-wider block mb-1"
@@ -250,7 +309,10 @@ export default function ResultPage() {
                     </div>
                     <div
                       className="p-4 rounded-sm"
-                      style={{ background: "#F9FAFB", border: "2px solid #E5E7EB" }}
+                      style={{
+                        background: "#F9FAFB",
+                        border: "2px solid #E5E7EB",
+                      }}
                     >
                       <span
                         className="text-[10px] font-mono-tech tracking-wider block mb-1"
@@ -267,7 +329,10 @@ export default function ResultPage() {
                     </div>
                     <div
                       className="p-4 rounded-sm"
-                      style={{ background: "#F9FAFB", border: "2px solid #E5E7EB" }}
+                      style={{
+                        background: "#F9FAFB",
+                        border: "2px solid #E5E7EB",
+                      }}
                     >
                       <span
                         className="text-[10px] font-mono-tech tracking-wider block mb-1"
@@ -304,30 +369,33 @@ export default function ResultPage() {
 
                 <div className="tech-card-body p-5">
                   {/* Not generated yet */}
-                  {!techPack?.image && !techPack?.isLoading && !techPack?.error && (
-                    <div className="text-center py-8">
-                      <div className="text-6xl mb-4">✨</div>
-                      <h3
-                        className="font-bold font-pixel mb-2 text-lg"
-                        style={{ color: "#1A1A1A" }}
-                      >
-                        Premium Embroidery Design
-                      </h3>
-                      <p
-                        className="text-sm font-mono-tech mb-6 max-w-sm mx-auto leading-relaxed"
-                        style={{ color: "#6B7280" }}
-                      >
-                        Generate a tech pack with premium decorative embroidery
-                        that transforms the defect into a limited-edition design.
-                      </p>
-                      <Button
-                        onClick={handleGenerateTechPack}
-                        className="nokia-btn nokia-btn-success px-8 py-4 text-sm font-pixel"
-                      >
-                        ✨ GENERATE DESIGN
-                      </Button>
-                    </div>
-                  )}
+                  {!techPack?.image &&
+                    !techPack?.isLoading &&
+                    !techPack?.error && (
+                      <div className="text-center py-8">
+                        <div className="text-6xl mb-4">✨</div>
+                        <h3
+                          className="font-bold font-pixel mb-2 text-lg"
+                          style={{ color: "#1A1A1A" }}
+                        >
+                          Premium Embroidery Design
+                        </h3>
+                        <p
+                          className="text-sm font-mono-tech mb-6 max-w-sm mx-auto leading-relaxed"
+                          style={{ color: "#6B7280" }}
+                        >
+                          Generate a tech pack with premium decorative
+                          embroidery that transforms the defect into a
+                          limited-edition design.
+                        </p>
+                        <Button
+                          onClick={handleGenerateTechPack}
+                          className="nokia-btn nokia-btn-success px-8 py-4 text-sm font-pixel"
+                        >
+                          ✨ GENERATE DESIGN
+                        </Button>
+                      </div>
+                    )}
 
                   {/* Loading */}
                   {techPack?.isLoading && (
@@ -395,7 +463,9 @@ export default function ResultPage() {
                           style={{
                             background: showTechPack ? "#166534" : "#F3F4F6",
                             color: showTechPack ? "#FFFFFF" : "#4B5563",
-                            border: `2px solid ${showTechPack ? "#166534" : "#E5E7EB"}`,
+                            border: `2px solid ${
+                              showTechPack ? "#166534" : "#E5E7EB"
+                            }`,
                           }}
                         >
                           TECH PACK
@@ -406,7 +476,9 @@ export default function ResultPage() {
                           style={{
                             background: !showTechPack ? "#124191" : "#F3F4F6",
                             color: !showTechPack ? "#FFFFFF" : "#4B5563",
-                            border: `2px solid ${!showTechPack ? "#124191" : "#E5E7EB"}`,
+                            border: `2px solid ${
+                              !showTechPack ? "#124191" : "#E5E7EB"
+                            }`,
                           }}
                         >
                           ORIGINAL
@@ -466,7 +538,10 @@ export default function ResultPage() {
                   <div className="flex items-start gap-4">
                     <div
                       className="w-14 h-14 flex items-center justify-center rounded-sm shrink-0 text-2xl"
-                      style={{ background: "#F3E8FF", border: "2px solid #7C3AED" }}
+                      style={{
+                        background: "#F3E8FF",
+                        border: "2px solid #7C3AED",
+                      }}
                     >
                       👑
                     </div>
@@ -481,8 +556,9 @@ export default function ResultPage() {
                         className="text-sm font-mono-tech leading-relaxed"
                         style={{ color: "#4B5563" }}
                       >
-                        Folk art & ceremonial motifs transform defects into intentional,
-                        limited-edition designs. High-fashion meets heritage craftsmanship.
+                        Folk art & ceremonial motifs transform defects into
+                        intentional, limited-edition designs. High-fashion meets
+                        heritage craftsmanship.
                       </p>
                     </div>
                   </div>
@@ -495,8 +571,11 @@ export default function ResultPage() {
           <div className="tech-card">
             <div className="tech-card-header">/// ACTIONS</div>
             <div className="tech-card-body p-5">
-              <div className="grid sm:grid-cols-3 gap-4">
-                <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <Dialog
+                  open={showSuccessDialog}
+                  onOpenChange={setShowSuccessDialog}
+                >
                   <Button
                     onClick={handleSaveToWardrobe}
                     disabled={isSaving || saved}
@@ -509,7 +588,7 @@ export default function ResultPage() {
                     ) : saved ? (
                       <span>✓ SAVED</span>
                     ) : (
-                      <span>💾 SAVE TO WARDROBE</span>
+                      <span>SAVE</span>
                     )}
                   </Button>
 
@@ -553,12 +632,21 @@ export default function ResultPage() {
                   onClick={handleNewScan}
                   className="nokia-btn w-full py-5 text-sm font-pixel"
                   style={{
-                    background: "linear-gradient(180deg, #F9FAFB 0%, #E5E7EB 100%)",
+                    background:
+                      "linear-gradient(180deg, #F9FAFB 0%, #E5E7EB 100%)",
                     borderColor: "#1A1A1A",
                     color: "#1A1A1A",
                   }}
                 >
-                  📷 NEW SCAN
+                  NEW SCAN
+                </Button>
+
+                <Button
+                  onClick={() => setShowOutsource(true)}
+                  className="nokia-btn nokia-btn-primary w-full py-5 text-sm font-pixel"
+                  disabled={!selectedOption}
+                >
+                  OUTSOURCE
                 </Button>
 
                 <Link href="/" className="block">
@@ -616,7 +704,10 @@ export default function ResultPage() {
                 RETHREAD
               </span>
               <span style={{ color: "#D1D5DB" }}>×</span>
-              <span className="text-sm font-mono-tech" style={{ color: "#6B7280" }}>
+              <span
+                className="text-sm font-mono-tech"
+                style={{ color: "#6B7280" }}
+              >
                 Nokia Innovation
               </span>
             </div>
@@ -643,6 +734,15 @@ export default function ResultPage() {
           </div>
         </div>
       </footer>
+
+      {/* Outsource View Modal */}
+      {showOutsource && selectedOption && capturedImage && (
+        <OutsourceView
+          imageSrc={capturedImage}
+          selectedOption={selectedOption}
+          onClose={() => setShowOutsource(false)}
+        />
+      )}
     </main>
   );
 }
