@@ -3,22 +3,30 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Nokia Design Archive Theme */
+/* =============================================
+   Y2K NOKIA EDGY AESTHETIC THEME
+   Inspired by: Nokia 3310, Y2K tech, cyber punk
+   ============================================= */
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-retro);
   --font-mono: var(--font-retro);
 
-  /* Nokia-inspired color palette */
-  --color-nokia-blue: #124191;
-  --color-matrix-green: #00ff00;
-  --color-screen-bg: #1a1a1a;
-  --color-retro-gray: #b0b0b0;
-  --color-nokia-cyan: #00ffff;
-  --color-nokia-amber: #ffaa00;
+  /* Y2K Nokia Color Palette */
+  --color-nokia-blue: #003b7a;
+  --color-nokia-cyan: #00e5ff;
+  --color-nokia-magenta: #ff00aa;
+  --color-nokia-purple: #9d00ff;
+  --color-nokia-green: #39ff14;
+  --color-nokia-chrome: #c0c0c0;
+  --color-nokia-silver: #e8e8e8;
+  --color-screen-glow: #001a33;
   --color-lcd-green: #9bbc0f;
   --color-lcd-dark: #0f380f;
+  --color-y2k-pink: #ff69b4;
+  --color-y2k-orange: #ff6600;
 
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -57,43 +65,46 @@
 
 :root {
   --radius: 0;
-  --background: #0a0a0a;
-  --foreground: #00ff00;
-  --card: #1a1a1a;
-  --card-foreground: #00ff00;
-  --popover: #1a1a1a;
-  --popover-foreground: #00ff00;
-  --primary: #124191;
+  --background: #040810;
+  --foreground: #39ff14;
+  --card: rgba(0, 30, 60, 0.6);
+  --card-foreground: #00e5ff;
+  --popover: rgba(0, 20, 40, 0.95);
+  --popover-foreground: #00e5ff;
+  --primary: #003b7a;
   --primary-foreground: #ffffff;
-  --secondary: #1a1a1a;
-  --secondary-foreground: #b0b0b0;
-  --muted: #2a2a2a;
-  --muted-foreground: #666666;
-  --accent: #00ffff;
-  --accent-foreground: #0a0a0a;
-  --destructive: #ff0040;
-  --border: #333333;
-  --input: #1a1a1a;
-  --ring: #124191;
-  --chart-1: #00ff00;
-  --chart-2: #00ffff;
-  --chart-3: #124191;
-  --chart-4: #ffaa00;
-  --chart-5: #ff0040;
-  --sidebar: #0a0a0a;
-  --sidebar-foreground: #00ff00;
-  --sidebar-primary: #124191;
+  --secondary: rgba(0, 30, 60, 0.4);
+  --secondary-foreground: #c0c0c0;
+  --muted: rgba(20, 40, 60, 0.5);
+  --muted-foreground: #6b7280;
+  --accent: #00e5ff;
+  --accent-foreground: #040810;
+  --destructive: #ff0055;
+  --border: rgba(0, 229, 255, 0.2);
+  --input: rgba(0, 30, 60, 0.6);
+  --ring: #00e5ff;
+  --chart-1: #39ff14;
+  --chart-2: #00e5ff;
+  --chart-3: #ff00aa;
+  --chart-4: #9d00ff;
+  --chart-5: #ff6600;
+  --sidebar: #040810;
+  --sidebar-foreground: #39ff14;
+  --sidebar-primary: #003b7a;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #1a1a1a;
-  --sidebar-accent-foreground: #00ff00;
-  --sidebar-border: #333333;
-  --sidebar-ring: #124191;
+  --sidebar-accent: rgba(0, 30, 60, 0.6);
+  --sidebar-accent-foreground: #00e5ff;
+  --sidebar-border: rgba(0, 229, 255, 0.2);
+  --sidebar-ring: #00e5ff;
 }
 
-/* CRT Scanline Effect */
+/* =============================================
+   Y2K GLITCH & SCANLINE EFFECTS
+   ============================================= */
+
 @keyframes scanline {
   0% {
-    transform: translateY(0);
+    transform: translateY(-100%);
   }
   100% {
     transform: translateY(100vh);
@@ -105,18 +116,84 @@
   100% {
     opacity: 1;
   }
+  92% {
+    opacity: 1;
+  }
+  93% {
+    opacity: 0.8;
+  }
+  94% {
+    opacity: 1;
+  }
+  97% {
+    opacity: 0.9;
+  }
+  98% {
+    opacity: 1;
+  }
+}
+
+@keyframes glitch {
+  0%,
+  100% {
+    transform: translate(0);
+    filter: hue-rotate(0deg);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+    filter: hue-rotate(90deg);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+    filter: hue-rotate(180deg);
+  }
+  60% {
+    transform: translate(2px, 2px);
+    filter: hue-rotate(270deg);
+  }
+  80% {
+    transform: translate(2px, -2px);
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes rgbShift {
+  0%,
+  100% {
+    text-shadow: -1px 0 #ff00aa, 1px 0 #00e5ff;
+  }
+  25% {
+    text-shadow: -2px 0 #ff00aa, 2px 0 #00e5ff;
+  }
   50% {
-    opacity: 0.98;
+    text-shadow: -1px 0 #00e5ff, 1px 0 #ff00aa;
+  }
+  75% {
+    text-shadow: -2px 0 #9d00ff, 2px 0 #39ff14;
   }
 }
 
 @keyframes textGlow {
   0%,
   100% {
-    text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00;
+    text-shadow: 0 0 10px #39ff14, 0 0 20px #39ff14, 0 0 40px #39ff14,
+      0 0 80px rgba(57, 255, 20, 0.5);
   }
   50% {
-    text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 15px #00ff00;
+    text-shadow: 0 0 5px #39ff14, 0 0 10px #39ff14, 0 0 20px #39ff14,
+      0 0 40px rgba(57, 255, 20, 0.3);
+  }
+}
+
+@keyframes cyberPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 5px #00e5ff, 0 0 10px #00e5ff,
+      inset 0 0 5px rgba(0, 229, 255, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff,
+      0 0 40px rgba(0, 229, 255, 0.3), inset 0 0 10px rgba(0, 229, 255, 0.2);
   }
 }
 
@@ -130,6 +207,45 @@
     opacity: 0;
   }
 }
+
+@keyframes dataStream {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 0% 100%;
+  }
+}
+
+@keyframes chromePulse {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes borderGlow {
+  0%,
+  100% {
+    border-color: #00e5ff;
+    box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+  }
+  33% {
+    border-color: #ff00aa;
+    box-shadow: 0 0 10px rgba(255, 0, 170, 0.5);
+  }
+  66% {
+    border-color: #9d00ff;
+    box-shadow: 0 0 10px rgba(157, 0, 255, 0.5);
+  }
+}
+
+/* =============================================
+   CRT SCREEN EFFECT
+   ============================================= */
 
 .crt-screen {
   position: relative;
@@ -146,13 +262,14 @@
   height: 100%;
   background: repeating-linear-gradient(
     0deg,
-    rgba(0, 0, 0, 0.15),
-    rgba(0, 0, 0, 0.15) 1px,
+    rgba(0, 0, 0, 0.2),
+    rgba(0, 0, 0, 0.2) 1px,
     transparent 1px,
-    transparent 2px
+    transparent 3px
   );
   pointer-events: none;
   z-index: 9999;
+  animation: flicker 0.15s infinite;
 }
 
 .crt-screen::after {
@@ -161,77 +278,274 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 4px;
-  background: rgba(0, 255, 0, 0.03);
-  animation: scanline 8s linear infinite;
+  height: 8px;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 229, 255, 0.1) 0%,
+    rgba(255, 0, 170, 0.05) 50%,
+    transparent 100%
+  );
+  animation: scanline 6s linear infinite;
   pointer-events: none;
   z-index: 9999;
 }
+
+/* =============================================
+   TEXT EFFECTS
+   ============================================= */
 
 .text-glow {
   animation: textGlow 2s ease-in-out infinite;
 }
 
 .text-glow-cyan {
-  text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
+  text-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff,
+    0 0 40px rgba(0, 229, 255, 0.5);
 }
 
-.text-glow-amber {
-  text-shadow: 0 0 10px #ffaa00, 0 0 20px #ffaa00, 0 0 30px #ffaa00;
+.text-glow-magenta {
+  text-shadow: 0 0 10px #ff00aa, 0 0 20px #ff00aa,
+    0 0 40px rgba(255, 0, 170, 0.5);
+}
+
+.text-glow-purple {
+  text-shadow: 0 0 10px #9d00ff, 0 0 20px #9d00ff,
+    0 0 40px rgba(157, 0, 255, 0.5);
+}
+
+.text-rgb-shift {
+  animation: rgbShift 3s ease-in-out infinite;
+}
+
+.text-glitch {
+  animation: glitch 0.3s ease-in-out infinite;
+}
+
+.text-chrome {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #c0c0c0 25%,
+    #808080 50%,
+    #c0c0c0 75%,
+    #ffffff 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
 }
 
 .blink {
   animation: blink 1s step-end infinite;
 }
 
-/* Nokia-style borders */
+/* =============================================
+   Y2K NOKIA BORDER STYLES
+   ============================================= */
+
 .nokia-border {
-  border: 3px solid #333;
-  box-shadow: inset 2px 2px 0 #4a4a4a, inset -2px -2px 0 #1a1a1a, 4px 4px 0 #000;
+  border: 2px solid rgba(0, 229, 255, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 59, 122, 0.2) 0%,
+    rgba(0, 20, 40, 0.8) 50%,
+    rgba(0, 59, 122, 0.2) 100%
+  );
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  position: relative;
 }
 
+.nokia-border::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 229, 255, 0.5) 50%,
+    transparent 100%
+  );
+}
+
+.nokia-border-glow {
+  border: 2px solid #00e5ff;
+  animation: cyberPulse 2s ease-in-out infinite;
+}
+
+.nokia-border-chrome {
+  border: 3px solid;
+  border-image: linear-gradient(
+      135deg,
+      #e8e8e8 0%,
+      #c0c0c0 25%,
+      #808080 50%,
+      #c0c0c0 75%,
+      #e8e8e8 100%
+    )
+    1;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5),
+    inset 2px 2px 0 rgba(255, 255, 255, 0.2),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.nokia-border-rainbow {
+  border: 2px solid;
+  animation: borderGlow 3s ease-in-out infinite;
+}
+
+/* =============================================
+   Y2K BUTTON STYLES
+   ============================================= */
+
 .nokia-button {
-  border: 2px solid #555;
-  box-shadow: inset 1px 1px 0 #666, inset -1px -1px 0 #222, 2px 2px 0 #000;
-  transition: all 0.1s;
+  position: relative;
+  border: 2px solid;
+  border-image: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(0, 229, 255, 0.5) 50%,
+      rgba(0, 0, 0, 0.3) 100%
+    )
+    1;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 59, 122, 0.8) 0%,
+    rgba(0, 30, 60, 0.9) 50%,
+    rgba(0, 20, 40, 1) 100%
+  );
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 229, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.1s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.nokia-button:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 229, 255, 0.3) 0%,
+    rgba(0, 59, 122, 0.8) 50%,
+    rgba(0, 30, 60, 0.9) 100%
+  );
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 229, 255, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .nokia-button:active {
-  box-shadow: inset -1px -1px 0 #666, inset 1px 1px 0 #222;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 229, 255, 0.2);
+  transform: translateY(3px);
+}
+
+.nokia-button-chrome {
+  background: linear-gradient(
+    180deg,
+    #e8e8e8 0%,
+    #c0c0c0 30%,
+    #a0a0a0 50%,
+    #c0c0c0 70%,
+    #e8e8e8 100%
+  );
+  background-size: 100% 200%;
+  animation: chromePulse 3s ease-in-out infinite;
+  border: 3px outset #c0c0c0;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4),
+    inset 2px 2px 0 rgba(255, 255, 255, 0.5),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.2);
+  color: #003b7a;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.nokia-button-chrome:active {
+  border-style: inset;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4),
+    inset -2px -2px 0 rgba(255, 255, 255, 0.3),
+    inset 2px 2px 0 rgba(0, 0, 0, 0.2);
   transform: translate(2px, 2px);
 }
 
-/* LCD Screen effect */
+/* =============================================
+   LCD & SCREEN EFFECTS
+   ============================================= */
+
 .lcd-screen {
-  background: linear-gradient(180deg, #0f380f 0%, #306230 50%, #0f380f 100%);
+  background: linear-gradient(180deg, #001a33 0%, #002244 50%, #001a33 100%);
+  border: 4px solid;
+  border-image: linear-gradient(
+      135deg,
+      #404040 0%,
+      #606060 25%,
+      #404040 50%,
+      #606060 75%,
+      #404040 100%
+    )
+    1;
+  box-shadow: inset 0 0 30px rgba(0, 229, 255, 0.1),
+    inset 0 0 60px rgba(57, 255, 20, 0.05);
   image-rendering: pixelated;
 }
 
-/* Pixel art scaling */
+.lcd-classic {
+  background: linear-gradient(180deg, #9bbc0f 0%, #8bac0f 50%, #7b9c0f 100%);
+  color: #0f380f;
+}
+
 .pixelated {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
 
-/* Progress bar Nokia style */
+/* =============================================
+   Y2K PROGRESS BAR
+   ============================================= */
+
 .nokia-progress {
-  height: 16px;
-  background: #1a1a1a;
-  border: 2px solid #333;
-  box-shadow: inset 0 0 0 1px #000;
+  height: 20px;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 20, 40, 0.8) 0%,
+    rgba(0, 30, 60, 0.6) 100%
+  );
+  border: 2px solid rgba(0, 229, 255, 0.3);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
 }
 
 .nokia-progress-fill {
-  background: linear-gradient(90deg, #124191 0%, #00ffff 100%);
-  box-shadow: 0 0 10px #00ffff;
+  height: 100%;
+  background: linear-gradient(90deg, #003b7a 0%, #00e5ff 50%, #ff00aa 100%);
+  box-shadow: 0 0 10px #00e5ff, 0 0 20px rgba(0, 229, 255, 0.5);
+  position: relative;
 }
 
-/* Viewfinder overlay */
+.nokia-progress-fill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.3) 0%,
+    transparent 100%
+  );
+}
+
+/* =============================================
+   VIEWFINDER OVERLAY
+   ============================================= */
+
 .viewfinder-corner {
   position: absolute;
-  width: 30px;
-  height: 30px;
-  border-color: #00ff00;
+  width: 40px;
+  height: 40px;
+  border-color: #00e5ff;
+  filter: drop-shadow(0 0 5px #00e5ff);
 }
 
 .viewfinder-corner-tl {
@@ -262,6 +576,103 @@
   border-right: 3px solid;
 }
 
+/* =============================================
+   Y2K CARDS & PANELS
+   ============================================= */
+
+.y2k-panel {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 59, 122, 0.3) 0%,
+    rgba(0, 20, 40, 0.9) 50%,
+    rgba(157, 0, 255, 0.1) 100%
+  );
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.y2k-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 229, 255, 0.1) 50%,
+    transparent 100%
+  );
+  animation: dataStream 3s linear infinite;
+}
+
+.translucent-card {
+  background: rgba(0, 30, 60, 0.4);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* =============================================
+   CIRCUIT BOARD PATTERN
+   ============================================= */
+
+.circuit-pattern {
+  background-image: linear-gradient(
+      90deg,
+      rgba(0, 229, 255, 0.03) 1px,
+      transparent 1px
+    ),
+    linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+    radial-gradient(
+      circle at 25% 25%,
+      rgba(0, 229, 255, 0.05) 2px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 75% 75%,
+      rgba(255, 0, 170, 0.05) 2px,
+      transparent 2px
+    );
+  background-size: 40px 40px, 40px 40px, 80px 80px, 80px 80px;
+}
+
+.data-grid {
+  background-image: linear-gradient(
+      0deg,
+      transparent 24%,
+      rgba(0, 229, 255, 0.05) 25%,
+      rgba(0, 229, 255, 0.05) 26%,
+      transparent 27%,
+      transparent 74%,
+      rgba(0, 229, 255, 0.05) 75%,
+      rgba(0, 229, 255, 0.05) 76%,
+      transparent 77%,
+      transparent
+    ),
+    linear-gradient(
+      90deg,
+      transparent 24%,
+      rgba(0, 229, 255, 0.05) 25%,
+      rgba(0, 229, 255, 0.05) 26%,
+      transparent 27%,
+      transparent 74%,
+      rgba(0, 229, 255, 0.05) 75%,
+      rgba(0, 229, 255, 0.05) 76%,
+      transparent 77%,
+      transparent
+    );
+  background-size: 60px 60px;
+}
+
+/* =============================================
+   BASE STYLES
+   ============================================= */
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -272,21 +683,266 @@
   }
 }
 
-/* Custom scrollbar */
+/* =============================================
+   CUSTOM SCROLLBAR - Y2K STYLE
+   ============================================= */
+
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 14px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1a1a;
-  border: 1px solid #333;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 20, 40, 0.8) 0%,
+    rgba(0, 30, 60, 0.6) 100%
+  );
+  border: 1px solid rgba(0, 229, 255, 0.2);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #124191;
-  border: 1px solid #333;
+  background: linear-gradient(180deg, #003b7a 0%, #00e5ff 50%, #003b7a 100%);
+  border: 1px solid rgba(0, 229, 255, 0.5);
+  box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.3);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #00ffff;
+  background: linear-gradient(180deg, #00e5ff 0%, #ff00aa 50%, #00e5ff 100%);
+}
+
+/* =============================================
+   SELECTION STYLES
+   ============================================= */
+
+::selection {
+  background: rgba(0, 229, 255, 0.4);
+  color: #ffffff;
+}
+
+/* =============================================
+   UTILITY CLASSES
+   ============================================= */
+
+.y2k-gradient-text {
+  background: linear-gradient(90deg, #00e5ff 0%, #ff00aa 50%, #9d00ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.y2k-gradient-bg {
+  background: linear-gradient(
+    135deg,
+    #003b7a 0%,
+    #00e5ff 25%,
+    #ff00aa 50%,
+    #9d00ff 75%,
+    #003b7a 100%
+  );
+  background-size: 400% 400%;
+  animation: chromePulse 10s ease-in-out infinite;
+}
+
+.cyber-glow {
+  filter: drop-shadow(0 0 10px currentColor);
+}
+
+.chrome-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.chrome-shine::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 60%
+  );
+  animation: chromePulse 3s linear infinite;
+}
+
+/* =============================================
+   CRT EFFECT ANIMATIONS
+   ============================================= */
+
+@keyframes rgb-scanline-sweep {
+  0% {
+    top: -10px;
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0.8;
+  }
+}
+
+@keyframes secondary-sweep {
+  0% {
+    top: -5px;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+@keyframes noise-shift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(-1%, -1%);
+  }
+  20% {
+    transform: translate(1%, 1%);
+  }
+  30% {
+    transform: translate(-1%, 1%);
+  }
+  40% {
+    transform: translate(1%, -1%);
+  }
+  50% {
+    transform: translate(-1%, 0);
+  }
+  60% {
+    transform: translate(1%, 0);
+  }
+  70% {
+    transform: translate(0, -1%);
+  }
+  80% {
+    transform: translate(0, 1%);
+  }
+  90% {
+    transform: translate(-1%, -1%);
+  }
+}
+
+@keyframes aggressive-flicker {
+  0% {
+    opacity: 0;
+  }
+  2% {
+    opacity: 0.03;
+    background: rgba(0, 229, 255, 0.01);
+  }
+  4% {
+    opacity: 0;
+  }
+  6% {
+    opacity: 0.02;
+    background: rgba(255, 0, 170, 0.01);
+  }
+  8% {
+    opacity: 0;
+  }
+  92% {
+    opacity: 0;
+  }
+  94% {
+    opacity: 0.02;
+    background: rgba(57, 255, 20, 0.01);
+  }
+  96% {
+    opacity: 0;
+  }
+  98% {
+    opacity: 0.01;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes distortion-shift {
+  0% {
+    transform: translateY(0) scaleX(1);
+  }
+  25% {
+    transform: translateY(-50px) scaleX(1.001);
+  }
+  50% {
+    transform: translateY(-100px) scaleX(0.999);
+  }
+  75% {
+    transform: translateY(-150px) scaleX(1.001);
+  }
+  100% {
+    transform: translateY(-200px) scaleX(1);
+  }
+}
+
+@keyframes snake-crawl {
+  0%,
+  100% {
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dashoffset: 20;
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -30px) scale(1.05);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.95);
+  }
+}
+
+@keyframes pulse-slow {
+  0%,
+  100% {
+    opacity: 0.1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.15;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes scanBeam {
+  0%,
+  100% {
+    transform: translateY(-100vh);
+  }
+  50% {
+    transform: translateY(100vh);
+  }
+}
+
+@keyframes loader-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }

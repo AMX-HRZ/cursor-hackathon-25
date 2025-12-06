@@ -81,14 +81,19 @@ export default function ScanningOverlay({
   const currentMessage = SCAN_MESSAGES[currentMessageIndex];
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#0a0a0a]/95 flex items-center justify-center">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      style={{
+        background: 'rgba(4, 8, 16, 0.98)',
+      }}
+    >
       {/* Scan grid background */}
       <div
         className="absolute inset-0 opacity-10"
         style={{
           backgroundImage: `
-            linear-gradient(90deg, #00ff00 1px, transparent 1px),
-            linear-gradient(#00ff00 1px, transparent 1px)
+            linear-gradient(90deg, #00e5ff 1px, transparent 1px),
+            linear-gradient(#00e5ff 1px, transparent 1px)
           `,
           backgroundSize: "20px 20px",
         }}
@@ -97,21 +102,35 @@ export default function ScanningOverlay({
       {/* Scan beam animation */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div
-          className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#00ff00] to-transparent opacity-50"
+          className="absolute left-0 right-0 h-1 opacity-50 animate-[scanBeam_2s_ease-in-out_infinite]"
           style={{
-            animation: "scanBeam 2s ease-in-out infinite",
+            background: 'linear-gradient(90deg, transparent, #00e5ff, transparent)',
             top: `${progress % 100}%`,
           }}
         />
       </div>
 
       {/* Main content */}
-      <div className="nokia-border bg-[#0a0a0a] p-8 max-w-xl w-full mx-4 relative">
+      <div 
+        className="nokia-border p-8 max-w-xl w-full mx-4 relative"
+        style={{
+          background: 'linear-gradient(135deg, rgba(0, 59, 122, 0.2) 0%, rgba(0, 20, 40, 0.95) 100%)',
+        }}
+      >
         {/* Header */}
-        <div className="flex items-center justify-between mb-6 border-b border-[#333] pb-4">
+        <div className="flex items-center justify-between mb-6 border-b border-[#00e5ff]/20 pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-3 h-3 bg-[#00ff00] animate-pulse" />
-            <span className="text-[#00ff00] text-sm tracking-widest">
+            <div 
+              className="w-3 h-3 animate-pulse"
+              style={{
+                backgroundColor: '#39ff14',
+                boxShadow: '0 0 10px #39ff14'
+              }}
+            />
+            <span 
+              className="text-sm tracking-widest"
+              style={{ color: '#00e5ff' }}
+            >
               MEND-AR SCANNER
             </span>
           </div>
@@ -124,27 +143,34 @@ export default function ScanningOverlay({
         </div>
 
         {/* Terminal Output - Compact */}
-        <div className="bg-[#1a1a1a] border border-[#333] p-3 mb-4 h-24 overflow-hidden font-mono">
+        <div 
+          className="border p-3 mb-4 h-24 overflow-hidden font-mono"
+          style={{
+            background: 'rgba(0, 30, 60, 0.6)',
+            borderColor: 'rgba(0, 229, 255, 0.2)'
+          }}
+        >
           <div className="space-y-0.5 text-[10px]">
             {completedMessages.slice(-4).map((msg, index) => (
               <div key={index} className="flex items-center gap-2">
-                <span className="text-[#124191]">&gt;</span>
-                <span className="text-[#00ff00] truncate">{msg}</span>
-                <span className="text-[#00ff00] ml-auto">✓</span>
+                <span style={{ color: '#ff00aa' }}>&gt;</span>
+                <span className="truncate" style={{ color: '#39ff14' }}>{msg}</span>
+                <span className="ml-auto" style={{ color: '#39ff14' }}>✓</span>
               </div>
             ))}
             {currentMessageIndex < SCAN_MESSAGES.length && (
               <div className="flex items-center gap-2">
-                <span className="text-[#124191]">&gt;</span>
-                <span className="text-[#ffaa00] truncate">
+                <span style={{ color: '#ff00aa' }}>&gt;</span>
+                <span className="truncate" style={{ color: '#ffaa00' }}>
                   {currentMessage?.text}
                 </span>
                 <span
-                  className={`text-[#ffaa00] ${
-                    showCursor ? "opacity-100" : "opacity-0"
-                  }`}
+                  style={{ 
+                    color: '#ffaa00',
+                    opacity: showCursor ? 1 : 0 
+                  }}
                 >
-                  _
+                  █
                 </span>
               </div>
             )}
@@ -155,7 +181,7 @@ export default function ScanningOverlay({
         <div className="mb-4">
           <div className="flex justify-between text-xs mb-2">
             <span className="text-[#666]">PROGRESS</span>
-            <span className="text-[#00ff00]">{Math.round(progress)}%</span>
+            <span style={{ color: '#39ff14' }}>{Math.round(progress)}%</span>
           </div>
           <div className="nokia-progress">
             <div
@@ -167,39 +193,45 @@ export default function ScanningOverlay({
 
         {/* Status indicators */}
         <div className="grid grid-cols-3 gap-4 text-center text-xs">
-          <div className="bg-[#1a1a1a] border border-[#333] p-2">
+          <div 
+            className="p-2"
+            style={{
+              background: 'rgba(0, 30, 60, 0.6)',
+              border: '1px solid rgba(0, 229, 255, 0.2)'
+            }}
+          >
             <div className="text-[#666] mb-1">CPU</div>
-            <div className="text-[#00ff00] animate-pulse">87%</div>
+            <div className="animate-pulse" style={{ color: '#39ff14' }}>87%</div>
           </div>
-          <div className="bg-[#1a1a1a] border border-[#333] p-2">
+          <div 
+            className="p-2"
+            style={{
+              background: 'rgba(0, 30, 60, 0.6)',
+              border: '1px solid rgba(0, 229, 255, 0.2)'
+            }}
+          >
             <div className="text-[#666] mb-1">NET</div>
-            <div className="text-[#00ffff]">●●●○</div>
+            <div style={{ color: '#00e5ff' }}>●●●○</div>
           </div>
-          <div className="bg-[#1a1a1a] border border-[#333] p-2">
+          <div 
+            className="p-2"
+            style={{
+              background: 'rgba(0, 30, 60, 0.6)',
+              border: '1px solid rgba(0, 229, 255, 0.2)'
+            }}
+          >
             <div className="text-[#666] mb-1">MEM</div>
-            <div className="text-[#ffaa00]">64MB</div>
+            <div style={{ color: '#ffaa00' }}>64MB</div>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="mt-6 pt-4 border-t border-[#333] text-center">
-          <p className="text-[#666] text-xs">
+        <div className="mt-6 pt-4 border-t border-[#00e5ff]/20 text-center">
+          <p className="text-[#666] text-xs tracking-wider">
             PLEASE WAIT • DO NOT CLOSE THIS WINDOW
           </p>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes scanBeam {
-          0%,
-          100% {
-            transform: translateY(-100vh);
-          }
-          50% {
-            transform: translateY(100vh);
-          }
-        }
-      `}</style>
     </div>
   );
 }

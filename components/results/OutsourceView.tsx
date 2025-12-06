@@ -157,8 +157,8 @@ export default function OutsourceView({
                   <div className="absolute inset-4 border-2 border-[#00ff00]/40 rounded-full" />
                   <div className="absolute inset-8 border-2 border-[#00ff00]/50 rounded-full" />
                   <div
-                    className="absolute inset-0 border-t-2 border-[#00ff00] rounded-full"
-                    style={{ animation: "spin 2s linear infinite" }}
+                    className="absolute inset-0 border-t-2 border-[#00ff00] rounded-full animate-spin"
+                    style={{ animationDuration: "2s" }}
                   />
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-3 h-3 bg-[#00ff00] rounded-full animate-pulse" />
@@ -530,16 +530,6 @@ export default function OutsourceView({
         </AnimatePresence>
       </div>
 
-      <style jsx>{`
-        @keyframes spin {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-      `}</style>
     </motion.div>
   );
 }
