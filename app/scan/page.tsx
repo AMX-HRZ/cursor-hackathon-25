@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 import CameraView from "@/components/CameraView";
 import ScanningOverlay from "@/components/scanner/ScanningOverlay";
 import { Button } from "@/components/ui/button";
 import { useRepair } from "@/context/RepairContext";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCallback, useState } from "react";
 
 export default function ScanPage() {
   const router = useRouter();
@@ -68,12 +68,6 @@ export default function ScanPage() {
                 >
                   RETHREAD
                 </span>
-                <span
-                  className="text-[10px] tracking-widest"
-                  style={{ color: "#A1A1C2" }}
-                >
-                  × NOKIA INNOVATION
-                </span>
               </div>
             </Link>
             <div className="flex items-center gap-3">
@@ -91,9 +85,14 @@ export default function ScanPage() {
               >
                 PROFILE
               </Link>
-              <div className="flex items-center gap-2 px-3 py-2 rounded-sm" style={{ background: "#DCFCE7", border: "2px solid #166534" }}>
+              <div
+                className="flex items-center gap-2 px-3 py-2 rounded-sm"
+                style={{ background: "#DCFCE7", border: "2px solid #166534" }}
+              >
                 <span
-                  className={`w-2 h-2 rounded-full ${isAnalyzing ? "" : "animate-pulse-tech"}`}
+                  className={`w-2 h-2 rounded-full ${
+                    isAnalyzing ? "" : "animate-pulse-tech"
+                  }`}
                   style={{ background: isAnalyzing ? "#FF5500" : "#22C55E" }}
                 />
                 <span
@@ -132,10 +131,7 @@ export default function ScanPage() {
 
           {/* Error Display */}
           {scanError && (
-            <div
-              className="tech-card mb-6"
-              style={{ borderColor: "#DC2626" }}
-            >
+            <div className="tech-card mb-6" style={{ borderColor: "#DC2626" }}>
               <div
                 className="tech-card-header flex items-center gap-2"
                 style={{ background: "#DC2626" }}
@@ -147,7 +143,10 @@ export default function ScanPage() {
                 <div className="flex items-center gap-4">
                   <div
                     className="w-12 h-12 flex items-center justify-center rounded-sm shrink-0"
-                    style={{ background: "#FEE2E2", border: "2px solid #DC2626" }}
+                    style={{
+                      background: "#FEE2E2",
+                      border: "2px solid #DC2626",
+                    }}
                   >
                     <span className="text-2xl">❌</span>
                   </div>
@@ -182,7 +181,9 @@ export default function ScanPage() {
               <span>/// CAMERA_FEED</span>
               <div className="flex items-center gap-2">
                 <span
-                  className={`w-2 h-2 rounded-full ${isAnalyzing ? "animate-pulse" : "animate-pulse-tech"}`}
+                  className={`w-2 h-2 rounded-full ${
+                    isAnalyzing ? "animate-pulse" : "animate-pulse-tech"
+                  }`}
                   style={{ background: isAnalyzing ? "#FF5500" : "#22C55E" }}
                 />
                 <span className="text-[10px]">
@@ -198,12 +199,24 @@ export default function ScanPage() {
                   onCapture={handleCapture}
                   isCapturing={showScanner || isAnalyzing}
                 />
-                
+
                 {/* Corner Markers */}
-                <div className="absolute top-2 left-2 w-6 h-6 border-l-2 border-t-2" style={{ borderColor: "#124191" }} />
-                <div className="absolute top-2 right-2 w-6 h-6 border-r-2 border-t-2" style={{ borderColor: "#124191" }} />
-                <div className="absolute bottom-2 left-2 w-6 h-6 border-l-2 border-b-2" style={{ borderColor: "#124191" }} />
-                <div className="absolute bottom-2 right-2 w-6 h-6 border-r-2 border-b-2" style={{ borderColor: "#124191" }} />
+                <div
+                  className="absolute top-2 left-2 w-6 h-6 border-l-2 border-t-2"
+                  style={{ borderColor: "#124191" }}
+                />
+                <div
+                  className="absolute top-2 right-2 w-6 h-6 border-r-2 border-t-2"
+                  style={{ borderColor: "#124191" }}
+                />
+                <div
+                  className="absolute bottom-2 left-2 w-6 h-6 border-l-2 border-b-2"
+                  style={{ borderColor: "#124191" }}
+                />
+                <div
+                  className="absolute bottom-2 right-2 w-6 h-6 border-r-2 border-b-2"
+                  style={{ borderColor: "#124191" }}
+                />
               </div>
             </div>
 

@@ -146,12 +146,6 @@ export default function Home() {
                 >
                   RETHREAD
                 </span>
-                <span
-                  className="text-[10px] tracking-widest"
-                  style={{ color: "#A1A1C2" }}
-                >
-                  × NOKIA INNOVATION
-                </span>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -1013,13 +1007,6 @@ export default function Home() {
                 style={{ color: "#1A1A1A" }}
               >
                 RETHREAD
-              </span>
-              <span style={{ color: "#D1D5DB" }}>×</span>
-              <span
-                className="text-sm font-mono-tech"
-                style={{ color: "#6B7280" }}
-              >
-                Nokia Innovation
               </span>
             </div>
             <div className="flex items-center gap-6 text-sm font-mono-tech">

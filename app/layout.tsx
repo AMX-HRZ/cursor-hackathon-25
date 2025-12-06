@@ -17,7 +17,7 @@ const pressStart = Press_Start_2P({
 
 export const metadata: Metadata = {
   title: "RETHREAD | Scan. Repair. Rewear.",
-  description: "AI-Powered Clothing Repair System - Nokia Innovation",
+  description: "AI-Powered Clothing Repair System",
   icons: {
     icon: "/favicon.ico",
   },

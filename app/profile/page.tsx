@@ -179,12 +179,6 @@ export default function ProfilePage() {
                 >
                   RETHREAD
                 </span>
-                <span
-                  className="text-[10px] tracking-widest"
-                  style={{ color: "#A1A1C2" }}
-                >
-                  × NOKIA INNOVATION
-                </span>
               </div>
             </Link>
             <div className="flex items-center gap-3">
@@ -278,7 +272,10 @@ export default function ProfilePage() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {/* Total Upcycled Value */}
             <div className="tech-card">
-              <div className="tech-card-header" style={{ background: "#166534" }}>
+              <div
+                className="tech-card-header"
+                style={{ background: "#166534" }}
+              >
                 /// UPCYCLED_VALUE
               </div>
               <div className="tech-card-body p-4">
@@ -299,7 +296,10 @@ export default function ProfilePage() {
 
             {/* Carbon Offset */}
             <div className="tech-card">
-              <div className="tech-card-header" style={{ background: "#124191" }}>
+              <div
+                className="tech-card-header"
+                style={{ background: "#124191" }}
+              >
                 /// CARBON_OFFSET
               </div>
               <div className="tech-card-body p-4">
@@ -320,7 +320,10 @@ export default function ProfilePage() {
 
             {/* Total Saves */}
             <div className="tech-card">
-              <div className="tech-card-header" style={{ background: "#FF5500" }}>
+              <div
+                className="tech-card-header"
+                style={{ background: "#FF5500" }}
+              >
                 /// GARMENTS_SAVED
               </div>
               <div className="tech-card-body p-4">
@@ -341,7 +344,10 @@ export default function ProfilePage() {
 
             {/* Snake Points */}
             <div className="tech-card">
-              <div className="tech-card-header" style={{ background: "#7C3AED" }}>
+              <div
+                className="tech-card-header"
+                style={{ background: "#7C3AED" }}
+              >
                 /// TOTAL_XP
               </div>
               <div className="tech-card-body p-4">
@@ -371,7 +377,9 @@ export default function ProfilePage() {
                 <button
                   onClick={() => {
                     if (
-                      confirm("Clear all repair history? This cannot be undone.")
+                      confirm(
+                        "Clear all repair history? This cannot be undone."
+                      )
                     ) {
                       clearHistory();
                       setStats(getProfileStats());
@@ -456,10 +464,6 @@ export default function ProfilePage() {
                 style={{ color: "#1A1A1A" }}
               >
                 RETHREAD
-              </span>
-              <span style={{ color: "#D1D5DB" }}>×</span>
-              <span className="text-sm font-mono-tech" style={{ color: "#6B7280" }}>
-                Nokia Innovation
               </span>
             </div>
             <div className="flex items-center gap-4 text-sm font-mono-tech">

@@ -47,7 +47,7 @@ function DialogOverlay({
         className
       )}
       style={{
-        background: 'radial-gradient(ellipse at center, rgba(0, 229, 255, 0.05) 0%, rgba(4, 8, 16, 0.95) 100%)',
+        background: 'rgba(242, 243, 245, 0.95)',
         backdropFilter: 'blur(4px)',
       }}
       {...props}
@@ -73,38 +73,21 @@ function DialogContent({
           className
         )}
         style={{
-          background: 'linear-gradient(135deg, rgba(0, 59, 122, 0.95) 0%, rgba(0, 20, 40, 0.98) 100%)',
-          border: '2px solid rgba(0, 229, 255, 0.3)',
-          boxShadow: '0 0 60px rgba(0, 229, 255, 0.2), 0 0 120px rgba(157, 0, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+          background: '#FFFFFF',
+          border: '2px solid #1A1A1A',
+          boxShadow: '2px 2px 0 rgba(26, 26, 26, 0.1)',
         }}
         {...props}
       >
-        {/* Corner accents */}
-        <div className="absolute top-0 left-0 w-6 h-6 pointer-events-none">
-          <div className="absolute top-0 left-0 w-4 h-[2px] bg-[#00e5ff]" />
-          <div className="absolute top-0 left-0 w-[2px] h-4 bg-[#00e5ff]" />
-        </div>
-        <div className="absolute top-0 right-0 w-6 h-6 pointer-events-none">
-          <div className="absolute top-0 right-0 w-4 h-[2px] bg-[#ff00aa]" />
-          <div className="absolute top-0 right-0 w-[2px] h-4 bg-[#ff00aa]" />
-        </div>
-        <div className="absolute bottom-0 left-0 w-6 h-6 pointer-events-none">
-          <div className="absolute bottom-0 left-0 w-4 h-[2px] bg-[#9d00ff]" />
-          <div className="absolute bottom-0 left-0 w-[2px] h-4 bg-[#9d00ff]" />
-        </div>
-        <div className="absolute bottom-0 right-0 w-6 h-6 pointer-events-none">
-          <div className="absolute bottom-0 right-0 w-4 h-[2px] bg-[#39ff14]" />
-          <div className="absolute bottom-0 right-0 w-[2px] h-4 bg-[#39ff14]" />
-        </div>
 
         {children}
         {showCloseButton && (
           <DialogPrimitive.Close
             data-slot="dialog-close"
             className="absolute top-4 right-4 opacity-70 transition-all hover:opacity-100 hover:scale-110 focus:outline-none disabled:pointer-events-none group"
-            style={{ color: '#00e5ff' }}
+            style={{ color: '#124191' }}
           >
-            <XIcon className="w-5 h-5 group-hover:drop-shadow-[0_0_10px_#00e5ff]" />
+            <XIcon className="w-5 h-5" />
             <span className="sr-only">Close</span>
           </DialogPrimitive.Close>
         )}
@@ -148,8 +131,7 @@ function DialogTitle({
         className
       )}
       style={{
-        color: '#00e5ff',
-        textShadow: '0 0 15px rgba(0, 229, 255, 0.5)',
+        color: '#124191',
       }}
       {...props}
     />
@@ -164,7 +146,7 @@ function DialogDescription({
     <DialogPrimitive.Description
       data-slot="dialog-description"
       className={cn("text-sm tracking-wider", className)}
-      style={{ color: '#c0c0c0' }}
+      style={{ color: '#6B7280' }}
       {...props}
     />
   )
