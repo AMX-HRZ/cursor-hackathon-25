@@ -56,7 +56,7 @@ const REPAIR_STEPS = {
 // DEMO DATA - Hardcoded response for demos
 // ============================================
 const DEMO_RESPONSE: AnalysisResponse = {
-  fabric: "Vintage Denim",
+  fabric: "Cotton",
   damageType: "TEAR",
   options: [
     {
