@@ -1,10 +1,5 @@
 "use client";
 
-import DynamicOverlay from "@/components/overlays/DynamicOverlay";
-import BusinessCard from "@/components/results/BusinessCard";
-import DigitalPassport from "@/components/results/DigitalPassport";
-import OutsourceView from "@/components/results/OutsourceView";
-import RepairGuide from "@/components/results/RepairGuide";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,291 +8,28 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { RepairOption, useRepair } from "@/context/RepairContext";
+import { useRepair } from "@/context/RepairContext";
 import { useRepairHistory } from "@/hooks/useRepairHistory";
-import { compositeImageWithOverlay } from "@/lib/imageCompositor";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-// ============================================
-// COMPACT OPTION CARD COMPONENT - Y2K Style
-// ============================================
-interface OptionCardProps {
-  option: RepairOption;
-  isSelected: boolean;
-  onClick: () => void;
-}
-
-function OptionCard({ option, isSelected, onClick }: OptionCardProps) {
-  const difficultyColor = {
-    LOW: "#39ff14",
-    MED: "#ffaa00",
-    HIGH: "#ff0055",
-  }[option.difficulty];
-
-  const typeIcon = {
-    basic: "▣",
-    trend: "✿",
-    cyber: "◈",
-  }[option.type];
-
-  const typeColor = {
-    basic: "#00e5ff",
-    trend: "#ff00aa",
-    cyber: "#9d00ff",
-  }[option.type];
-
-  return (
-    <button
-      onClick={onClick}
-      className="min-w-[180px] p-4 text-left transition-all duration-200 shrink-0 nokia-border"
-      style={{
-        background: isSelected 
-          ? `linear-gradient(135deg, ${typeColor}20 0%, rgba(0, 20, 40, 0.9) 100%)`
-          : 'rgba(0, 20, 40, 0.9)',
-        borderColor: isSelected ? typeColor : 'rgba(0, 229, 255, 0.2)',
-        boxShadow: isSelected 
-          ? `0 0 30px ${typeColor}40, inset 0 0 20px ${typeColor}10`
-          : '0 0 10px rgba(0, 229, 255, 0.1)',
-      }}
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between mb-3">
-        <span
-          className={`text-2xl ${isSelected ? "animate-pulse" : ""}`}
-          style={{ 
-            color: isSelected ? typeColor : "#666",
-            filter: isSelected ? `drop-shadow(0 0 10px ${typeColor})` : 'none'
-          }}
-        >
-          {typeIcon}
-        </span>
-        <span
-          className="text-[9px] px-2 py-0.5 tracking-wider"
-          style={{ 
-            color: difficultyColor, 
-            border: `1px solid ${difficultyColor}`,
-            boxShadow: `0 0 5px ${difficultyColor}40`
-          }}
-        >
-          {option.difficulty}
-        </span>
-      </div>
-
-      {/* Name */}
-      <div
-        className="text-xs tracking-wider mb-2"
-        style={{ 
-          fontFamily: "var(--font-pixel)",
-          color: isSelected ? typeColor : "#c0c0c0",
-          textShadow: isSelected ? `0 0 10px ${typeColor}80` : 'none'
-        }}
-      >
-        {option.name}
-      </div>
-
-      {/* Stats Row */}
-      <div className="flex items-center gap-3 text-[10px] mt-3">
-        <span style={{ color: '#ff0055' }}>-${option.cost}</span>
-        <span className="text-[#333]">→</span>
-        <span style={{ color: '#39ff14', textShadow: '0 0 5px rgba(57, 255, 20, 0.5)' }}>
-          +${option.value_increase}
-        </span>
-      </div>
-
-      {/* Selection indicator */}
-      {isSelected && (
-        <div 
-          className="mt-3 text-center text-[9px] tracking-[0.2em] animate-pulse"
-          style={{ color: typeColor }}
-        >
-          ▶ SELECTED ◀
-        </div>
-      )}
-    </button>
-  );
-}
-
-// ============================================
-// REPAIR VIEW WITH DYNAMIC OVERLAY - Y2K Style
-// ============================================
-interface RepairViewProps {
-  imageSrc: string;
-  selectedOption: RepairOption;
-  overlayKey: number;
-}
-
-function RepairView({ imageSrc, selectedOption, overlayKey }: RepairViewProps) {
-  const typeColor = {
-    basic: "#00e5ff",
-    trend: "#ff00aa",
-    cyber: "#9d00ff",
-  }[selectedOption.type];
-
-  return (
-    <div className="nokia-border bg-[rgba(0,20,40,0.9)] p-4">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4 text-xs">
-        <div className="flex items-center gap-2">
-          <div 
-            className="w-2 h-2"
-            style={{
-              backgroundColor: typeColor,
-              boxShadow: `0 0 10px ${typeColor}`
-            }}
-          />
-          <span 
-            className="tracking-[0.2em]"
-            style={{ color: typeColor }}
-          >
-            AR REPAIR PREVIEW
-          </span>
-        </div>
-        <span className="text-[#666] tracking-wider">{selectedOption.difficulty}</span>
-      </div>
-
-      {/* Image Container with Y2K Frame */}
-      <div 
-        className="relative aspect-[4/3] overflow-hidden"
-        style={{
-          border: `2px solid ${typeColor}`,
-          boxShadow: `0 0 20px ${typeColor}30, inset 0 0 30px rgba(0, 0, 0, 0.5)`
-        }}
-      >
-        {/* Captured Image */}
-        <img
-          src={imageSrc}
-          alt="Captured fabric for repair"
-          className="w-full h-full object-cover"
-        />
-
-        {/* Dynamic Overlay - Changes based on selection */}
-        <DynamicOverlay
-          key={overlayKey}
-          type={selectedOption.type}
-          coordinates={selectedOption.coordinates}
-          width={640}
-          height={480}
-          animated={true}
-        />
-
-        {/* Viewfinder Corners - Y2K Colors */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div 
-            className="absolute top-4 left-4 w-10 h-10"
-            style={{
-              borderTop: `3px solid ${typeColor}`,
-              borderLeft: `3px solid ${typeColor}`,
-              filter: `drop-shadow(0 0 5px ${typeColor})`
-            }}
-          />
-          <div 
-            className="absolute top-4 right-4 w-10 h-10"
-            style={{
-              borderTop: `3px solid #ff00aa`,
-              borderRight: `3px solid #ff00aa`,
-              filter: 'drop-shadow(0 0 5px #ff00aa)'
-            }}
-          />
-          <div 
-            className="absolute bottom-4 left-4 w-10 h-10"
-            style={{
-              borderBottom: `3px solid #9d00ff`,
-              borderLeft: `3px solid #9d00ff`,
-              filter: 'drop-shadow(0 0 5px #9d00ff)'
-            }}
-          />
-          <div 
-            className="absolute bottom-4 right-4 w-10 h-10"
-            style={{
-              borderBottom: `3px solid #39ff14`,
-              borderRight: `3px solid #39ff14`,
-              filter: 'drop-shadow(0 0 5px #39ff14)'
-            }}
-          />
-        </div>
-
-        {/* Technique Badge */}
-        <div 
-          className="absolute top-4 right-16 px-3 py-1"
-          style={{
-            backgroundColor: 'rgba(4, 8, 16, 0.9)',
-            border: `1px solid ${typeColor}`,
-            boxShadow: `0 0 15px ${typeColor}30`
-          }}
-        >
-          <span 
-            className="text-xs tracking-wider"
-            style={{ color: typeColor }}
-          >
-            {selectedOption.name}
-          </span>
-        </div>
-
-        {/* Grid overlay */}
-        <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <div 
-            className="absolute top-1/3 left-0 right-0 h-[1px]"
-            style={{ backgroundColor: typeColor }}
-          />
-          <div 
-            className="absolute top-2/3 left-0 right-0 h-[1px]"
-            style={{ backgroundColor: typeColor }}
-          />
-          <div 
-            className="absolute left-1/3 top-0 bottom-0 w-[1px]"
-            style={{ backgroundColor: typeColor }}
-          />
-          <div 
-            className="absolute left-2/3 top-0 bottom-0 w-[1px]"
-            style={{ backgroundColor: typeColor }}
-          />
-        </div>
-      </div>
-
-      {/* Legend */}
-      <div className="mt-4 flex items-center justify-center gap-8 text-xs">
-        <div className="flex items-center gap-2">
-          <div 
-            className="w-8 h-[3px]"
-            style={{
-              background: `linear-gradient(90deg, ${typeColor} 0%, #39ff14 100%)`,
-              boxShadow: `0 0 10px ${typeColor}`
-            }}
-          />
-          <span className="text-[#c0c0c0] tracking-wider">STITCH PATH</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div 
-            className="w-4 h-4 rounded-full animate-pulse"
-            style={{
-              backgroundColor: '#39ff14',
-              boxShadow: '0 0 10px #39ff14'
-            }}
-          />
-          <span className="text-[#c0c0c0] tracking-wider">ENDPOINT</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ============================================
-// MAIN RESULT PAGE - Y2K Style
-// ============================================
 export default function ResultPage() {
   const router = useRouter();
-  const { capturedImage, analysisData, clearSession } = useRepair();
+  const {
+    capturedImage,
+    analysisData,
+    techPack,
+    generateTechPack,
+    clearSession,
+  } = useRepair();
   const { saveRepair } = useRepairHistory();
-  const [selectedOptionIndex, setSelectedOptionIndex] = useState(0);
+
+  const [showTechPack, setShowTechPack] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [showDialog, setShowDialog] = useState(false);
-  const [showPassport, setShowPassport] = useState(false);
-  const [showOutsource, setShowOutsource] = useState(false);
-  const [overlayKey, setOverlayKey] = useState(0);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   // Redirect if no data
   useEffect(() => {
@@ -306,10 +38,8 @@ export default function ResultPage() {
     }
   }, [capturedImage, analysisData, router]);
 
-  // Reset overlay animation when option changes
-  const handleOptionSelect = (index: number) => {
-    setSelectedOptionIndex(index);
-    setOverlayKey((prev) => prev + 1);
+  const handleGenerateTechPack = async () => {
+    await generateTechPack();
   };
 
   const handleSaveToWardrobe = async () => {
@@ -318,62 +48,24 @@ export default function ResultPage() {
     setIsSaving(true);
 
     try {
-      const selectedOption = analysisData.options[selectedOptionIndex];
-      const profit = selectedOption.value_increase - selectedOption.cost;
-      const snakePoints = Math.round(selectedOption.value_increase * 1.5);
-
-      const compositeImage = await compositeImageWithOverlay(
-        capturedImage,
-        selectedOption.coordinates,
-        selectedOption.type,
-        640,
-        480
-      );
+      const imageToSave = techPack?.image || capturedImage;
 
       saveRepair({
-        img: compositeImage,
-        profit: profit,
-        optionName: selectedOption.name,
-        snakePoints: snakePoints,
+        img: imageToSave,
+        profit: 45,
+        optionName: "PREMIUM EMBROIDERY",
+        snakePoints: 75,
         fabric: analysisData.fabric,
-        technique: selectedOption.type,
+        technique: "trend",
       });
 
       setIsSaving(false);
       setSaved(true);
-      setShowDialog(true);
+      setShowSuccessDialog(true);
     } catch (error) {
-      console.error("Failed to save repair:", error);
+      console.error("Failed to save:", error);
       setIsSaving(false);
-      const selectedOption = analysisData.options[selectedOptionIndex];
-      const profit = selectedOption.value_increase - selectedOption.cost;
-      const snakePoints = Math.round(selectedOption.value_increase * 1.5);
-
-      saveRepair({
-        img: capturedImage,
-        profit: profit,
-        optionName: selectedOption.name,
-        snakePoints: snakePoints,
-        fabric: analysisData.fabric,
-        technique: selectedOption.type,
-      });
-
-      setSaved(true);
-      setShowDialog(true);
     }
-  };
-
-  const handleDialogClose = () => {
-    setShowDialog(false);
-    router.push("/profile");
-  };
-
-  const handleExportToMarket = () => {
-    setShowPassport(true);
-  };
-
-  const handleOutsource = () => {
-    setShowOutsource(true);
   };
 
   const handleNewScan = () => {
@@ -381,408 +73,576 @@ export default function ResultPage() {
     router.push("/scan");
   };
 
-  // Loading state - Y2K Style
+  // Loading state
   if (!capturedImage || !analysisData) {
     return (
-      <main className="min-h-screen flex items-center justify-center">
+      <main className="min-h-screen flex items-center justify-center dot-grid-bg">
         <div className="text-center">
-          <div 
-            className="text-xl animate-pulse mb-4 tracking-widest"
-            style={{
-              color: '#00e5ff',
-              textShadow: '0 0 20px rgba(0, 229, 255, 0.5)'
-            }}
-          >
-            LOADING...
-          </div>
-          <div className="text-[#666] text-sm tracking-wider">Retrieving analysis data</div>
+          <div
+            className="w-12 h-12 mx-auto mb-4 rounded-full animate-spin"
+            style={{ border: "3px solid #E5E7EB", borderTopColor: "#124191" }}
+          />
+          <p className="font-mono-tech" style={{ color: "#6B7280" }}>
+            Loading analysis...
+          </p>
         </div>
       </main>
     );
   }
 
-  const selectedOption = analysisData.options[selectedOptionIndex];
-  const profit = selectedOption.value_increase - selectedOption.cost;
-  const snakeScore = Math.round(selectedOption.value_increase * 1.5);
-
   return (
-    <>
-      <main className="min-h-screen flex flex-col p-4">
-        {/* Header - Y2K Style */}
-        <header className="nokia-border bg-[rgba(0,20,40,0.9)] p-4 mb-6 shrink-0">
+    <main className="min-h-screen flex flex-col dot-grid-bg">
+      {/* ============================================ */}
+      {/* NAV BAR */}
+      {/* ============================================ */}
+      <nav
+        className="bg-white border-b-2 sticky top-0 z-50"
+        style={{ borderColor: "#1A1A1A" }}
+      >
+        <div className="max-w-5xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/scan">
-              <Button
-                variant="ghost"
-                className="text-[#c0c0c0] hover:text-[#00e5ff] hover:bg-transparent p-0"
+            <Link href="/" className="flex items-center gap-3">
+              <div
+                className="w-10 h-10 flex items-center justify-center rounded-sm"
+                style={{ background: "#124191" }}
               >
-                ◀ RESCAN
-              </Button>
+                <span className="text-white text-lg font-bold">R</span>
+              </div>
+              <div className="flex flex-col">
+                <span
+                  className="text-lg font-bold tracking-wider leading-none font-pixel"
+                  style={{ color: "#1A1A1A" }}
+                >
+                  RETHREAD
+                </span>
+                <span
+                  className="text-[10px] tracking-widest"
+                  style={{ color: "#A1A1C2" }}
+                >
+                  × NOKIA INNOVATION
+                </span>
+              </div>
             </Link>
             <div className="flex items-center gap-3">
-              <div 
-                className="w-2 h-2 animate-pulse"
-                style={{
-                  backgroundColor: '#39ff14',
-                  boxShadow: '0 0 10px #39ff14'
-                }}
-              />
-              <h1
-                className="text-xl tracking-widest"
-                style={{ 
-                  fontFamily: "var(--font-pixel)",
-                  color: '#39ff14',
-                  textShadow: '0 0 20px rgba(57, 255, 20, 0.5), -1px 0 #00e5ff, 1px 0 #ff00aa'
-                }}
+              <div
+                className="flex items-center gap-2 px-3 py-2 rounded-sm"
+                style={{ background: "#DCFCE7", border: "2px solid #166534" }}
               >
-                ANALYSIS COMPLETE
-              </h1>
-            </div>
-            <Link href="/profile">
-              <Button
-                variant="ghost"
-                className="text-[#00e5ff] hover:text-[#39ff14] hover:bg-transparent p-0 text-xs tracking-widest"
-              >
-                PROFILE ▶
-              </Button>
-            </Link>
-          </div>
-        </header>
-
-        {/* Strategy Selector - Horizontal Scroll with Y2K Style */}
-        <div className="nokia-border bg-[rgba(0,20,40,0.9)] p-4 mb-6 shrink-0">
-          <div className="flex items-center gap-2 mb-4">
-            <div 
-              className="w-2 h-2"
-              style={{
-                backgroundColor: '#00e5ff',
-                boxShadow: '0 0 5px #00e5ff'
-              }}
-            />
-            <span 
-              className="text-sm tracking-[0.2em]"
-              style={{ color: '#00e5ff' }}
-            >
-              SELECT REPAIR STRATEGY
-            </span>
-          </div>
-          <div className="flex gap-3 overflow-x-auto pb-2">
-            {analysisData.options.map((option, index) => (
-              <OptionCard
-                key={option.id}
-                option={option}
-                isSelected={selectedOptionIndex === index}
-                onClick={() => handleOptionSelect(index)}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Repair Guide - Execution Protocol */}
-        <div className="mb-6">
-          <motion.div
-            key={selectedOptionIndex}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <RepairGuide selectedOption={selectedOption} />
-          </motion.div>
-        </div>
-
-        {/* Main Content - Two Column Layout */}
-        <div className="grid lg:grid-cols-2 gap-6">
-          {/* Left Column - Repair Visualization */}
-          <RepairView
-            imageSrc={capturedImage}
-            selectedOption={selectedOption}
-            overlayKey={overlayKey}
-          />
-
-          {/* Right Column - Business Data & Actions */}
-          <div className="space-y-6">
-            {/* Business Card */}
-            <motion.div
-              key={selectedOptionIndex}
-              initial={{ opacity: 0.5, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.2 }}
-            >
-              <BusinessCard
-                scrapValue={selectedOption.cost}
-                upcycledValue={selectedOption.value_increase}
-                fabric={analysisData.fabric}
-                damageType={analysisData.damageType}
-              />
-            </motion.div>
-
-            {/* Repair Details - Y2K Grid */}
-            <div className="nokia-border bg-[rgba(0,20,40,0.9)] p-4">
-              <div className="flex items-center gap-2 mb-4">
-                <div 
-                  className="w-2 h-2"
-                  style={{
-                    backgroundColor: '#9d00ff',
-                    boxShadow: '0 0 5px #9d00ff'
-                  }}
+                <span
+                  className="w-2 h-2 rounded-full animate-pulse-tech"
+                  style={{ background: "#22C55E" }}
                 />
-                <span 
-                  className="text-sm tracking-[0.2em]"
-                  style={{ color: '#9d00ff' }}
+                <span
+                  className="text-xs font-bold tracking-wider font-mono-tech"
+                  style={{ color: "#166534" }}
                 >
-                  REPAIR DETAILS
+                  ANALYSIS COMPLETE
                 </span>
               </div>
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                <div 
-                  className="p-3"
-                  style={{
-                    background: 'rgba(0, 30, 60, 0.6)',
-                    border: '1px solid rgba(0, 229, 255, 0.2)'
-                  }}
-                >
-                  <span className="text-[#666] block mb-1 tracking-wider">TECHNIQUE</span>
-                  <span style={{ color: '#00e5ff' }}>{selectedOption.name}</span>
-                </div>
-                <div 
-                  className="p-3"
-                  style={{
-                    background: 'rgba(0, 30, 60, 0.6)',
-                    border: '1px solid rgba(0, 229, 255, 0.2)'
-                  }}
-                >
-                  <span className="text-[#666] block mb-1 tracking-wider">EST. TIME</span>
-                  <span style={{ color: '#ffaa00' }}>
-                    {selectedOption.time} MIN
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* ============================================ */}
+      {/* MAIN CONTENT */}
+      {/* ============================================ */}
+      <div className="flex-1 py-8 px-6">
+        <div className="max-w-5xl mx-auto">
+          {/* Page Header */}
+          <div className="text-center mb-8">
+            <div className="tech-badge tech-badge-green mb-3">
+              <span className="mr-2">✓</span>
+              GARMENT ANALYZED
+            </div>
+            <h1
+              className="text-2xl md:text-3xl font-bold font-pixel mb-2"
+              style={{ color: "#1A1A1A" }}
+            >
+              Repair Plan Ready
+            </h1>
+            <p className="text-sm font-mono-tech" style={{ color: "#6B7280" }}>
+              Your garment has been analyzed. Generate a tech pack or save to your wardrobe.
+            </p>
+          </div>
+
+          {/* Two Column Layout */}
+          <div className="grid lg:grid-cols-2 gap-6 mb-8">
+            {/* Left Column - Original Image & Analysis */}
+            <div className="space-y-6">
+              {/* Captured Image Card */}
+              <div className="tech-card">
+                <div className="tech-card-header flex items-center justify-between">
+                  <span>/// CAPTURED_IMAGE</span>
+                  <span className="text-[10px]">
+                    {new Date(analysisData.timestamp).toLocaleTimeString()}
                   </span>
                 </div>
-                <div 
-                  className="p-3"
-                  style={{
-                    background: 'rgba(0, 30, 60, 0.6)',
-                    border: '1px solid rgba(0, 229, 255, 0.2)'
-                  }}
+                <div className="lcd-display m-4">
+                  <img
+                    src={capturedImage}
+                    alt="Captured garment"
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
+                <div
+                  className="p-4 border-t-2 flex items-center justify-between"
+                  style={{ borderColor: "#1A1A1A", background: "#F9FAFB" }}
                 >
-                  <span className="text-[#666] block mb-1 tracking-wider">DIFFICULTY</span>
                   <span
-                    style={{
-                      color: selectedOption.difficulty === "LOW"
-                        ? "#39ff14"
-                        : selectedOption.difficulty === "MED"
-                        ? "#ffaa00"
-                        : "#ff0055",
-                      textShadow: `0 0 5px ${
-                        selectedOption.difficulty === "LOW"
-                          ? "#39ff14"
-                          : selectedOption.difficulty === "MED"
-                          ? "#ffaa00"
-                          : "#ff0055"
-                      }50`
-                    }}
+                    className="text-xs font-mono-tech"
+                    style={{ color: "#6B7280" }}
                   >
-                    {selectedOption.difficulty}
+                    ID: {analysisData.analysisId}
                   </span>
-                </div>
-                <div 
-                  className="p-3"
-                  style={{
-                    background: 'rgba(0, 30, 60, 0.6)',
-                    border: '1px solid rgba(0, 229, 255, 0.2)'
-                  }}
-                >
-                  <span className="text-[#666] block mb-1 tracking-wider">SNAKE SCORE</span>
-                  <span 
-                    style={{ 
-                      color: '#ff00aa',
-                      textShadow: '0 0 5px rgba(255, 0, 170, 0.5)'
-                    }}
+                  <span
+                    className="text-xs font-mono-tech font-bold"
+                    style={{ color: "#166534" }}
                   >
-                    {snakeScore} ★
+                    ✓ REPAIRABLE
                   </span>
                 </div>
               </div>
-            </div>
 
-            {/* Action Buttons - Y2K Style */}
-            <div className="space-y-3">
-              <Dialog open={showDialog} onOpenChange={setShowDialog}>
-                <Button
-                  onClick={handleSaveToWardrobe}
-                  disabled={isSaving || saved}
-                  className="w-full py-6 text-lg tracking-widest"
-                  style={{
-                    background: saved 
-                      ? 'linear-gradient(180deg, rgba(57, 255, 20, 0.2) 0%, rgba(0, 30, 60, 0.9) 100%)'
-                      : 'linear-gradient(180deg, #003b7a 0%, #001a33 50%, #003b7a 100%)',
-                    borderColor: saved ? '#39ff14' : '#00e5ff',
-                    color: saved ? '#39ff14' : '#00e5ff'
-                  }}
+              {/* Analysis Results */}
+              <div className="tech-card">
+                <div
+                  className="tech-card-header"
+                  style={{ background: "#7C3AED" }}
                 >
-                  {isSaving ? (
-                    <span className="flex items-center gap-2">
-                      <span className="animate-spin">◐</span> SAVING...
-                    </span>
-                  ) : saved ? (
-                    <span className="flex items-center gap-2">
-                      ✓ SAVED TO WARDROBE
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-2">
-                      💾 SAVE TO WARDROBE
-                    </span>
-                  )}
-                </Button>
-
-                <DialogContent 
-                  className="nokia-border"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(0, 59, 122, 0.95) 0%, rgba(0, 20, 40, 0.98) 100%)',
-                    borderColor: 'rgba(57, 255, 20, 0.5)',
-                    boxShadow: '0 0 60px rgba(57, 255, 20, 0.2)'
-                  }}
-                >
-                  <DialogHeader>
-                    <DialogTitle 
-                      className="text-center text-2xl tracking-widest"
-                      style={{ 
-                        color: '#39ff14',
-                        textShadow: '0 0 20px rgba(57, 255, 20, 0.8)'
-                      }}
+                  /// ANALYSIS_RESULTS
+                </div>
+                <div className="tech-card-body p-5">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div
+                      className="p-4 rounded-sm"
+                      style={{ background: "#F9FAFB", border: "2px solid #E5E7EB" }}
                     >
-                      ✓ REPAIR SAVED
-                    </DialogTitle>
-                    <DialogDescription className="text-[#c0c0c0] text-center tracking-wider">
-                      Your repair has been archived. Snake grows +1!
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="text-center py-6">
-                    <div 
-                      className="text-7xl mb-4"
-                      style={{ filter: 'drop-shadow(0 0 20px #39ff14)' }}
-                    >
-                      🐍
+                      <span
+                        className="text-[10px] font-mono-tech tracking-wider block mb-1"
+                        style={{ color: "#9CA3AF" }}
+                      >
+                        FABRIC TYPE
+                      </span>
+                      <span
+                        className="font-bold font-pixel"
+                        style={{ color: "#1A1A1A" }}
+                      >
+                        {analysisData.fabric}
+                      </span>
                     </div>
-                    <div 
-                      className="text-2xl mb-3 tracking-widest"
-                      style={{ 
-                        color: '#00e5ff',
-                        textShadow: '0 0 15px rgba(0, 229, 255, 0.5)'
-                      }}
+                    <div
+                      className="p-4 rounded-sm"
+                      style={{ background: "#F9FAFB", border: "2px solid #E5E7EB" }}
                     >
-                      +{snakeScore} XP EARNED
+                      <span
+                        className="text-[10px] font-mono-tech tracking-wider block mb-1"
+                        style={{ color: "#9CA3AF" }}
+                      >
+                        DAMAGE TYPE
+                      </span>
+                      <span
+                        className="font-bold font-pixel"
+                        style={{ color: "#DC2626" }}
+                      >
+                        {analysisData.damageType}
+                      </span>
                     </div>
-                    <div 
-                      className="text-xl mb-3 tracking-widest"
-                      style={{ 
-                        color: '#39ff14',
-                        textShadow: '0 0 15px rgba(57, 255, 20, 0.5)'
-                      }}
+                    <div
+                      className="p-4 rounded-sm"
+                      style={{ background: "#F9FAFB", border: "2px solid #E5E7EB" }}
                     >
-                      PROFIT: +${profit}
+                      <span
+                        className="text-[10px] font-mono-tech tracking-wider block mb-1"
+                        style={{ color: "#9CA3AF" }}
+                      >
+                        REPAIR METHOD
+                      </span>
+                      <span
+                        className="font-bold font-pixel"
+                        style={{ color: "#7C3AED" }}
+                      >
+                        EMBROIDERY
+                      </span>
                     </div>
-                    <div className="text-[#666] text-xs tracking-wider">
-                      VIEW YOUR STATS ON THE PROFILE PAGE
+                    <div
+                      className="p-4 rounded-sm"
+                      style={{ background: "#F9FAFB", border: "2px solid #E5E7EB" }}
+                    >
+                      <span
+                        className="text-[10px] font-mono-tech tracking-wider block mb-1"
+                        style={{ color: "#9CA3AF" }}
+                      >
+                        DIFFICULTY
+                      </span>
+                      <span
+                        className="font-bold font-pixel"
+                        style={{ color: "#FF5500" }}
+                      >
+                        MEDIUM
+                      </span>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column - Tech Pack Generator */}
+            <div className="space-y-6">
+              {/* Tech Pack Card */}
+              <div className="tech-card">
+                <div
+                  className="tech-card-header flex items-center justify-between"
+                  style={{ background: "#166534" }}
+                >
+                  <span>/// TECH_PACK_GENERATOR</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px]">GEMINI AI</span>
+                    <span>✨</span>
+                  </div>
+                </div>
+
+                <div className="tech-card-body p-5">
+                  {/* Not generated yet */}
+                  {!techPack?.image && !techPack?.isLoading && !techPack?.error && (
+                    <div className="text-center py-8">
+                      <div className="text-6xl mb-4">✨</div>
+                      <h3
+                        className="font-bold font-pixel mb-2 text-lg"
+                        style={{ color: "#1A1A1A" }}
+                      >
+                        Premium Embroidery Design
+                      </h3>
+                      <p
+                        className="text-sm font-mono-tech mb-6 max-w-sm mx-auto leading-relaxed"
+                        style={{ color: "#6B7280" }}
+                      >
+                        Generate a tech pack with premium decorative embroidery
+                        that transforms the defect into a limited-edition design.
+                      </p>
+                      <Button
+                        onClick={handleGenerateTechPack}
+                        className="nokia-btn nokia-btn-success px-8 py-4 text-sm font-pixel"
+                      >
+                        ✨ GENERATE DESIGN
+                      </Button>
+                    </div>
+                  )}
+
+                  {/* Loading */}
+                  {techPack?.isLoading && (
+                    <div className="text-center py-12">
+                      <div className="relative w-20 h-20 mx-auto mb-6">
+                        <div
+                          className="absolute inset-0 rounded-full animate-spin"
+                          style={{
+                            border: "3px solid #E5E7EB",
+                            borderTopColor: "#7C3AED",
+                          }}
+                        />
+                        <div className="absolute inset-2 flex items-center justify-center">
+                          <span className="text-3xl animate-pulse">✨</span>
+                        </div>
+                      </div>
+                      <p
+                        className="font-pixel text-sm animate-pulse"
+                        style={{ color: "#7C3AED" }}
+                      >
+                        DESIGNING...
+                      </p>
+                      <p
+                        className="text-xs font-mono-tech mt-2"
+                        style={{ color: "#6B7280" }}
+                      >
+                        Creating premium embroidery design
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Error */}
+                  {techPack?.error && (
+                    <div className="text-center py-8">
+                      <div className="text-5xl mb-4">⚠️</div>
+                      <h3
+                        className="font-bold font-pixel mb-2"
+                        style={{ color: "#DC2626" }}
+                      >
+                        Generation Failed
+                      </h3>
+                      <p
+                        className="text-sm font-mono-tech mb-4"
+                        style={{ color: "#6B7280" }}
+                      >
+                        {techPack.error}
+                      </p>
+                      <Button
+                        onClick={handleGenerateTechPack}
+                        className="nokia-btn nokia-btn-alert px-6 py-3 text-sm font-pixel"
+                      >
+                        TRY AGAIN
+                      </Button>
+                    </div>
+                  )}
+
+                  {/* Generated Tech Pack */}
+                  {techPack?.image && !techPack.isLoading && (
+                    <div>
+                      {/* Toggle View */}
+                      <div className="flex justify-center gap-2 mb-4">
+                        <button
+                          onClick={() => setShowTechPack(true)}
+                          className="px-4 py-2 text-xs font-mono-tech tracking-wider rounded-sm transition-all"
+                          style={{
+                            background: showTechPack ? "#166534" : "#F3F4F6",
+                            color: showTechPack ? "#FFFFFF" : "#4B5563",
+                            border: `2px solid ${showTechPack ? "#166534" : "#E5E7EB"}`,
+                          }}
+                        >
+                          TECH PACK
+                        </button>
+                        <button
+                          onClick={() => setShowTechPack(false)}
+                          className="px-4 py-2 text-xs font-mono-tech tracking-wider rounded-sm transition-all"
+                          style={{
+                            background: !showTechPack ? "#124191" : "#F3F4F6",
+                            color: !showTechPack ? "#FFFFFF" : "#4B5563",
+                            border: `2px solid ${!showTechPack ? "#124191" : "#E5E7EB"}`,
+                          }}
+                        >
+                          ORIGINAL
+                        </button>
+                      </div>
+
+                      {/* Image Display */}
+                      <div className="lcd-display relative overflow-hidden">
+                        <AnimatePresence mode="wait">
+                          <motion.img
+                            key={showTechPack ? "techpack" : "original"}
+                            src={showTechPack ? techPack.image : capturedImage}
+                            alt={showTechPack ? "Tech pack" : "Original"}
+                            className="w-full h-auto object-contain"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                          />
+                        </AnimatePresence>
+                        <div
+                          className="absolute top-3 left-3 px-3 py-1 rounded-sm text-xs font-mono-tech"
+                          style={{
+                            background: showTechPack ? "#166534" : "#124191",
+                            color: "#FFFFFF",
+                          }}
+                        >
+                          {showTechPack ? "TECH PACK" : "ORIGINAL"}
+                        </div>
+                      </div>
+
+                      {/* Regenerate */}
+                      <div className="mt-4 text-center">
+                        <Button
+                          onClick={handleGenerateTechPack}
+                          variant="outline"
+                          className="text-xs font-mono-tech"
+                          style={{ borderColor: "#166534", color: "#166534" }}
+                        >
+                          🔄 REGENERATE
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Premium Embroidery Info Card */}
+              <div className="tech-card" style={{ borderColor: "#7C3AED" }}>
+                <div
+                  className="tech-card-header"
+                  style={{ background: "#7C3AED" }}
+                >
+                  /// DESIGN_APPROACH
+                </div>
+                <div className="tech-card-body p-5">
+                  <div className="flex items-start gap-4">
+                    <div
+                      className="w-14 h-14 flex items-center justify-center rounded-sm shrink-0 text-2xl"
+                      style={{ background: "#F3E8FF", border: "2px solid #7C3AED" }}
+                    >
+                      👑
+                    </div>
+                    <div>
+                      <h3
+                        className="font-bold font-pixel mb-1"
+                        style={{ color: "#7C3AED" }}
+                      >
+                        Premium Embroidery
+                      </h3>
+                      <p
+                        className="text-sm font-mono-tech leading-relaxed"
+                        style={{ color: "#4B5563" }}
+                      >
+                        Folk art & ceremonial motifs transform defects into intentional,
+                        limited-edition designs. High-fashion meets heritage craftsmanship.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="tech-card">
+            <div className="tech-card-header">/// ACTIONS</div>
+            <div className="tech-card-body p-5">
+              <div className="grid sm:grid-cols-3 gap-4">
+                <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
                   <Button
-                    onClick={handleDialogClose}
-                    className="w-full"
+                    onClick={handleSaveToWardrobe}
+                    disabled={isSaving || saved}
+                    className="nokia-btn nokia-btn-primary w-full py-5 text-sm font-pixel"
                   >
-                    VIEW PROFILE
+                    {isSaving ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <span className="animate-spin">◐</span> SAVING...
+                      </span>
+                    ) : saved ? (
+                      <span>✓ SAVED</span>
+                    ) : (
+                      <span>💾 SAVE TO WARDROBE</span>
+                    )}
                   </Button>
-                </DialogContent>
-              </Dialog>
 
-              {/* Export to Market */}
-              <Button
-                onClick={handleExportToMarket}
-                className="w-full py-6 text-lg tracking-widest"
-                style={{
-                  background: 'linear-gradient(180deg, rgba(57, 255, 20, 0.2) 0%, rgba(0, 30, 60, 0.9) 100%)',
-                  borderColor: '#39ff14',
-                  color: '#39ff14'
-                }}
-              >
-                <span className="flex items-center gap-2">
-                  📋 EXPORT TO RESALE MARKET
-                </span>
-              </Button>
+                  <DialogContent className="tech-card border-0">
+                    <DialogHeader>
+                      <DialogTitle
+                        className="text-center text-2xl font-pixel"
+                        style={{ color: "#166534" }}
+                      >
+                        ✓ Saved Successfully!
+                      </DialogTitle>
+                      <DialogDescription className="text-center font-mono-tech">
+                        Your repair has been added to your wardrobe.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="text-center py-6">
+                      <div className="text-6xl mb-4">🐍</div>
+                      <div
+                        className="text-xl mb-2 font-pixel"
+                        style={{ color: "#124191" }}
+                      >
+                        +75 XP EARNED
+                      </div>
+                      <div
+                        className="text-lg font-pixel"
+                        style={{ color: "#166534" }}
+                      >
+                        +$45 VALUE ADDED
+                      </div>
+                    </div>
+                    <Button
+                      onClick={() => router.push("/profile")}
+                      className="nokia-btn nokia-btn-success w-full"
+                    >
+                      VIEW PROFILE
+                    </Button>
+                  </DialogContent>
+                </Dialog>
 
-              {/* Outsource to Vendor */}
-              <Button
-                onClick={handleOutsource}
-                variant="outline"
-                className="w-full py-6 text-lg tracking-widest"
-                style={{
-                  background: 'transparent',
-                  borderColor: '#ffaa00',
-                  color: '#ffaa00'
-                }}
-              >
-                <span className="flex items-center gap-2">
-                  🏪 OUTSOURCE TO VENDOR
-                </span>
-              </Button>
+                <Button
+                  onClick={handleNewScan}
+                  className="nokia-btn w-full py-5 text-sm font-pixel"
+                  style={{
+                    background: "linear-gradient(180deg, #F9FAFB 0%, #E5E7EB 100%)",
+                    borderColor: "#1A1A1A",
+                    color: "#1A1A1A",
+                  }}
+                >
+                  📷 NEW SCAN
+                </Button>
 
-              <Button
-                onClick={handleNewScan}
-                variant="ghost"
-                className="w-full py-6 text-lg tracking-widest text-[#666] hover:text-[#00e5ff]"
+                <Link href="/" className="block">
+                  <Button
+                    variant="outline"
+                    className="w-full py-5 text-sm font-pixel"
+                    style={{ borderColor: "#9CA3AF", color: "#6B7280" }}
+                  >
+                    ← BACK TO HOME
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Environmental Impact */}
+          <div className="mt-6 text-center">
+            <div
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-sm"
+              style={{ background: "#DCFCE7", border: "2px solid #166534" }}
+            >
+              <span>🌍</span>
+              <span
+                className="text-sm font-mono-tech"
+                style={{ color: "#166534" }}
               >
-                📷 NEW SCAN
-              </Button>
+                By repairing this item, you&apos;re saving approximately{" "}
+                <strong>20kg CO₂</strong> and <strong>2,700L of water</strong>
+              </span>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Footer - Y2K Style */}
-        <footer className="mt-6 nokia-border bg-[rgba(0,20,40,0.9)] p-4 shrink-0">
-          <div className="flex items-center justify-between text-xs">
-            <div className="text-[#666]">
-              <span style={{ color: '#9d00ff' }}>ID:</span>{" "}
-              <span className="tracking-wider">{analysisData.analysisId}</span>
+      {/* ============================================ */}
+      {/* FOOTER */}
+      {/* ============================================ */}
+      <footer
+        className="bg-white border-t-2 py-4 px-6"
+        style={{ borderColor: "#1A1A1A" }}
+      >
+        <div className="max-w-5xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div
+                className="w-8 h-8 flex items-center justify-center rounded-sm"
+                style={{ background: "#124191" }}
+              >
+                <span className="text-white text-sm font-bold">R</span>
+              </div>
+              <span
+                className="font-bold tracking-wider font-pixel"
+                style={{ color: "#1A1A1A" }}
+              >
+                RETHREAD
+              </span>
+              <span style={{ color: "#D1D5DB" }}>×</span>
+              <span className="text-sm font-mono-tech" style={{ color: "#6B7280" }}>
+                Nokia Innovation
+              </span>
             </div>
-            <Link 
-              href="/" 
-              className="tracking-widest hover:text-[#39ff14] transition-colors"
-              style={{ color: '#00e5ff' }}
-            >
-              ◀ MAIN MENU
-            </Link>
+            <div className="flex items-center gap-4 text-sm font-mono-tech">
+              <Link
+                href="/scan"
+                className="font-bold tracking-wider hover:opacity-70 transition-opacity"
+                style={{ color: "#124191" }}
+              >
+                Scanner
+              </Link>
+              <Link
+                href="/profile"
+                className="font-bold tracking-wider hover:opacity-70 transition-opacity"
+                style={{ color: "#7C3AED" }}
+              >
+                Profile
+              </Link>
+              <span style={{ color: "#D1D5DB" }}>|</span>
+              <span className="font-bold" style={{ color: "#166534" }}>
+                🌍 For the Planet
+              </span>
+            </div>
           </div>
-        </footer>
-      </main>
-
-      {/* Digital Passport Overlay */}
-      <AnimatePresence>
-        {showPassport && (
-          <DigitalPassport
-            analysisData={{
-              fabric: analysisData.fabric,
-              damageType: analysisData.damageType,
-              repairTechnique: selectedOption.name,
-              snakeScore: snakeScore,
-              marketValueRepaired: selectedOption.value_increase,
-              difficulty: selectedOption.difficulty,
-              timestamp: analysisData.timestamp,
-              analysisId: analysisData.analysisId,
-            }}
-            imageSrc={capturedImage}
-            onClose={() => setShowPassport(false)}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Outsource View Overlay */}
-      <AnimatePresence>
-        {showOutsource && (
-          <OutsourceView
-            imageSrc={capturedImage}
-            selectedOption={selectedOption}
-            onClose={() => setShowOutsource(false)}
-          />
-        )}
-      </AnimatePresence>
-    </>
+        </div>
+      </footer>
+    </main>
   );
 }

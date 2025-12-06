@@ -3,9 +3,9 @@
 import { useCallback, useEffect, useState } from "react";
 
 /**
- * SnakeLoader - Y2K Nokia Animated Snake game loading screen
+ * SnakeLoader - Nokia Clean Room Animated Snake game loading screen
  *
- * Visual: 10x10 green grid with snake moving and eating food
+ * Visual: 10x10 grid with snake moving and eating food
  * Used during API calls for a retro gaming experience
  */
 
@@ -130,19 +130,19 @@ export default function SnakeLoader({
         const isFood = food.x === x && food.y === y;
 
         let cellStyle: React.CSSProperties = {
-          background: 'rgba(0, 30, 60, 0.6)',
+          background: "#E5E7EB",
         };
         let cellContent = null;
 
         if (isSnakeHead) {
           cellStyle = {
-            background: '#39ff14',
-            boxShadow: '0 0 10px #39ff14, 0 0 20px rgba(57, 255, 20, 0.5)',
+            background: "#166534",
+            boxShadow: "0 0 6px rgba(22, 101, 52, 0.5)",
           };
           cellContent = (
-            <div 
+            <div
               className="w-full h-full flex items-center justify-center text-[6px]"
-              style={{ color: '#040810' }}
+              style={{ color: "#FFFFFF" }}
             >
               ●
             </div>
@@ -151,23 +151,22 @@ export default function SnakeLoader({
           const bodyIndex = snake.findIndex((s) => s.x === x && s.y === y);
           const opacity = 1 - (bodyIndex / snake.length) * 0.5;
           cellStyle = {
-            background: `rgba(57, 255, 20, ${opacity})`,
-            boxShadow: `0 0 ${5 * opacity}px rgba(57, 255, 20, ${opacity * 0.5})`,
+            background: `rgba(22, 101, 52, ${opacity})`,
           };
         } else if (isFood && foodVisible) {
           cellStyle = {
-            background: '#ff0055',
-            boxShadow: '0 0 10px #ff0055, 0 0 20px rgba(255, 0, 85, 0.5)',
+            background: "#DC2626",
+            boxShadow: "0 0 6px rgba(220, 38, 38, 0.5)",
           };
         }
 
         cells.push(
           <div
             key={`${x}-${y}`}
-            className="w-4 h-4 transition-all duration-75"
+            className="w-4 h-4 rounded-sm transition-all duration-75"
             style={{
               ...cellStyle,
-              border: '1px solid rgba(0, 229, 255, 0.1)',
+              border: "1px solid #D1D5DB",
             }}
           >
             {cellContent}
@@ -180,22 +179,17 @@ export default function SnakeLoader({
   };
 
   return (
-    <div className="flex flex-col items-center gap-6">
+    <div className="flex flex-col items-center gap-4">
       {/* Game Title */}
-      <div 
-        className="text-xs tracking-[0.3em] opacity-60"
-        style={{ color: '#00e5ff' }}
+      <div
+        className="text-xs tracking-widest font-mono-tech"
+        style={{ color: "#124191" }}
       >
         ◈ NOKIA SNAKE ◈
       </div>
 
       {/* Game Grid */}
-      <div 
-        className="nokia-border p-3"
-        style={{
-          background: 'linear-gradient(135deg, rgba(0, 59, 122, 0.2) 0%, rgba(0, 20, 40, 0.9) 100%)',
-        }}
-      >
+      <div className="lcd-display p-3">
         <div
           className="grid gap-0"
           style={{
@@ -207,28 +201,16 @@ export default function SnakeLoader({
       </div>
 
       {/* Score Display */}
-      <div className="flex items-center gap-6 text-xs">
+      <div className="flex items-center gap-6 text-xs font-mono-tech">
         <div className="text-center">
-          <div className="text-[#666] tracking-wider">LENGTH</div>
-          <div
-            style={{ 
-              fontFamily: "var(--font-pixel)",
-              color: '#39ff14',
-              textShadow: '0 0 10px rgba(57, 255, 20, 0.5)'
-            }}
-          >
+          <div style={{ color: "#6B7280" }}>LENGTH</div>
+          <div className="font-bold font-pixel" style={{ color: "#166534" }}>
             {snake.length}
           </div>
         </div>
         <div className="text-center">
-          <div className="text-[#666] tracking-wider">SPEED</div>
-          <div
-            style={{ 
-              fontFamily: "var(--font-pixel)",
-              color: '#00e5ff',
-              textShadow: '0 0 10px rgba(0, 229, 255, 0.5)'
-            }}
-          >
+          <div style={{ color: "#6B7280" }}>SPEED</div>
+          <div className="font-bold font-pixel" style={{ color: "#124191" }}>
             LV.2
           </div>
         </div>
@@ -236,12 +218,8 @@ export default function SnakeLoader({
 
       {/* Loading Message */}
       <div
-        className="text-sm tracking-widest animate-pulse text-center"
-        style={{ 
-          fontFamily: "var(--font-pixel)",
-          color: '#ffaa00',
-          textShadow: '0 0 10px rgba(255, 170, 0, 0.5)'
-        }}
+        className="text-sm tracking-widest animate-pulse-tech text-center font-pixel"
+        style={{ color: "#FF5500" }}
       >
         {message}
       </div>
@@ -251,11 +229,10 @@ export default function SnakeLoader({
         {[0, 1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className="w-2 h-2 animate-[loader-pulse_1s_ease-in-out_infinite]"
+            className="w-2 h-2 rounded-sm animate-pulse"
             style={{
-              backgroundColor: '#00e5ff',
+              background: "#124191",
               animationDelay: `${i * 0.2}s`,
-              boxShadow: '0 0 5px #00e5ff',
             }}
           />
         ))}

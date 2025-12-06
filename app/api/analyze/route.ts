@@ -97,7 +97,7 @@ const DEMO_RESPONSE: AnalysisResponse = {
     },
   ],
   timestamp: new Date().toISOString(),
-  analysisId: `MEND-${Date.now().toString(36).toUpperCase()}`,
+  analysisId: `RTH-${Date.now().toString(36).toUpperCase()}`,
 };
 
 // ============================================
@@ -222,7 +222,7 @@ async function analyzeWithOpenAI(
   const apiKey = process.env.OPENAI_API_KEY;
 
   if (!apiKey || apiKey === "your-api-key-here") {
-    console.log("[MEND-AR] No OpenAI key found, using mock data");
+    console.log("[RETHREAD] No OpenAI key found, using mock data");
     return null;
   }
 
@@ -234,7 +234,7 @@ async function analyzeWithOpenAI(
       messages: [
         {
           role: "system",
-          content: `You are a textile analysis AI for the MEND-AR clothing repair system. 
+          content: `You are a textile analysis AI for the RETHREAD clothing repair system. 
 Analyze fabric images and return JSON with fabric identification.
 Always respond with valid JSON only, no markdown or explanation.`,
         },
@@ -278,7 +278,7 @@ Return ONLY the JSON object, no other text.`,
       damageType: aiData.damageType?.toUpperCase() || "TEAR",
     };
   } catch (error) {
-    console.error("[MEND-AR] OpenAI error:", error);
+    console.error("[RETHREAD] OpenAI error:", error);
     return null;
   }
 }
@@ -297,7 +297,7 @@ export async function POST(request: NextRequest) {
 
     // DEMO MODE: Return hardcoded data immediately
     if (DEMO_MODE) {
-      console.log("[MEND-AR] DEMO_MODE enabled, returning hardcoded response");
+      console.log("[RETHREAD] DEMO_MODE enabled, returning hardcoded response");
       const demoData: AnalysisResponse = {
         ...DEMO_RESPONSE,
         options: DEMO_RESPONSE.options.map((opt) => ({
@@ -309,7 +309,7 @@ export async function POST(request: NextRequest) {
           ),
         })),
         timestamp: new Date().toISOString(),
-        analysisId: `MEND-${Date.now().toString(36).toUpperCase()}`,
+        analysisId: `RTH-${Date.now().toString(36).toUpperCase()}`,
       };
       return NextResponse.json(demoData);
     }
@@ -328,7 +328,7 @@ export async function POST(request: NextRequest) {
           aiAnalysis.damageType
         ),
         timestamp: new Date().toISOString(),
-        analysisId: `MEND-${Date.now().toString(36).toUpperCase()}`,
+        analysisId: `RTH-${Date.now().toString(36).toUpperCase()}`,
       };
     } else {
       analysisData = {
@@ -342,13 +342,13 @@ export async function POST(request: NextRequest) {
           ),
         })),
         timestamp: new Date().toISOString(),
-        analysisId: `MEND-${Date.now().toString(36).toUpperCase()}`,
+        analysisId: `RTH-${Date.now().toString(36).toUpperCase()}`,
       };
     }
 
     return NextResponse.json(analysisData);
   } catch (error) {
-    console.error("[MEND-AR] Analysis error:", error);
+    console.error("[RETHREAD] Analysis error:", error);
     return NextResponse.json({ error: "Analysis failed" }, { status: 500 });
   }
 }
@@ -361,7 +361,7 @@ export async function GET() {
 
   return NextResponse.json({
     status: "OPERATIONAL",
-    service: "MEND-AR Analysis API",
+    service: "RETHREAD Analysis API",
     version: "5.0.0",
     mode: DEMO_MODE ? "DEMO_MODE" : hasOpenAI ? "AI_ENABLED" : "MOCK_MODE",
     timestamp: new Date().toISOString(),

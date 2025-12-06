@@ -4,200 +4,354 @@
 @custom-variant dark (&:is(.dark *));
 
 /* =============================================
-   Y2K NOKIA EDGY AESTHETIC THEME
-   Inspired by: Nokia 3310, Y2K tech, cyber punk
+   RETHREAD - Y2K FUTURISM / LABORATORY SCHEMATIC
+   Nokia N-Series Clean Room Aesthetic
    ============================================= */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-retro);
-  --font-mono: var(--font-retro);
+  /* Core Nokia Color Palette */
+  --color-nokia-paper: #f2f3f5;
+  --color-nokia-plastic: #ffffff;
+  --color-nokia-blue: #124191;
+  --color-tech-black: #1a1a1a;
+  --color-lcd-grey: #a1a1c2;
+  --color-alert-orange: #ff5500;
 
-  /* Y2K Nokia Color Palette */
-  --color-nokia-blue: #003b7a;
-  --color-nokia-cyan: #00e5ff;
-  --color-nokia-magenta: #ff00aa;
-  --color-nokia-purple: #9d00ff;
-  --color-nokia-green: #39ff14;
-  --color-nokia-chrome: #c0c0c0;
-  --color-nokia-silver: #e8e8e8;
-  --color-screen-glow: #001a33;
-  --color-lcd-green: #9bbc0f;
-  --color-lcd-dark: #0f380f;
-  --color-y2k-pink: #ff69b4;
-  --color-y2k-orange: #ff6600;
+  /* Extended palette */
+  --color-nokia-green: #006400;
+  --color-grid-dot: #d0d4dc;
+  --color-border-light: #e5e7eb;
+  --color-border-medium: #9ca3af;
 
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: 0;
-  --radius-md: 0;
-  --radius-lg: 0;
-  --radius-xl: 0;
+  /* Fonts */
+  --font-sans: var(--font-mono);
+  --font-mono: var(--font-body);
 }
 
 :root {
-  --radius: 0;
-  --background: #040810;
-  --foreground: #39ff14;
-  --card: rgba(0, 30, 60, 0.6);
-  --card-foreground: #00e5ff;
-  --popover: rgba(0, 20, 40, 0.95);
-  --popover-foreground: #00e5ff;
-  --primary: #003b7a;
+  /* Slightly rounded corners - Nokia 5310 style */
+  --radius: 4px;
+
+  /* Core theme variables */
+  --background: #f2f3f5;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --primary: #124191;
   --primary-foreground: #ffffff;
-  --secondary: rgba(0, 30, 60, 0.4);
-  --secondary-foreground: #c0c0c0;
-  --muted: rgba(20, 40, 60, 0.5);
+  --secondary: #e5e7eb;
+  --secondary-foreground: #4b5563;
+  --muted: #f3f4f6;
   --muted-foreground: #6b7280;
-  --accent: #00e5ff;
-  --accent-foreground: #040810;
-  --destructive: #ff0055;
-  --border: rgba(0, 229, 255, 0.2);
-  --input: rgba(0, 30, 60, 0.6);
-  --ring: #00e5ff;
-  --chart-1: #39ff14;
-  --chart-2: #00e5ff;
-  --chart-3: #ff00aa;
-  --chart-4: #9d00ff;
-  --chart-5: #ff6600;
-  --sidebar: #040810;
-  --sidebar-foreground: #39ff14;
-  --sidebar-primary: #003b7a;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: rgba(0, 30, 60, 0.6);
-  --sidebar-accent-foreground: #00e5ff;
-  --sidebar-border: rgba(0, 229, 255, 0.2);
-  --sidebar-ring: #00e5ff;
+  --accent: #ff5500;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --border: #d1d5db;
+  --input: #ffffff;
+  --ring: #124191;
 }
 
 /* =============================================
-   Y2K GLITCH & SCANLINE EFFECTS
+   BASE STYLES - CLEAN ROOM
    ============================================= */
 
-@keyframes scanline {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(100vh);
-  }
+* {
+  border-color: var(--border);
 }
 
-@keyframes flicker {
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), "DM Mono", "Space Mono", monospace;
+}
+
+/* =============================================
+   DOT GRID BACKGROUND - Engineering Paper
+   ============================================= */
+
+.dot-grid-bg {
+  background-color: #f2f3f5;
+  background-image: radial-gradient(circle, #c8ccd4 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.dot-grid-bg-dense {
+  background-color: #f2f3f5;
+  background-image: radial-gradient(circle, #c8ccd4 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+
+.dot-grid-bg-white {
+  background-color: #ffffff;
+  background-image: radial-gradient(circle, #e5e7eb 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* =============================================
+   TECHNICAL SPEC CARDS
+   ============================================= */
+
+.tech-card {
+  background: #ffffff;
+  border: 2px solid #1a1a1a;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 rgba(26, 26, 26, 0.1);
+  position: relative;
+}
+
+.tech-card-header {
+  background: #124191;
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: var(--font-pixel), monospace;
+  border-bottom: 2px solid #1a1a1a;
+}
+
+.tech-card-body {
+  padding: 1rem;
+}
+
+/* Card variants */
+.tech-card-blue {
+  border-color: #124191;
+}
+
+.tech-card-alert {
+  border-color: #ff5500;
+}
+
+.tech-card-alert .tech-card-header {
+  background: #ff5500;
+}
+
+/* =============================================
+   PHYSICAL SOFTKEY BUTTONS
+   ============================================= */
+
+.nokia-btn {
+  background: linear-gradient(180deg, #f9fafb 0%, #e5e7eb 100%);
+  border: 2px solid #1a1a1a;
+  border-bottom-width: 4px;
+  border-radius: 4px;
+  color: #124191;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all 0.1s ease;
+  box-shadow: 0 2px 0 rgba(26, 26, 26, 0.1);
+}
+
+.nokia-btn:hover {
+  background: linear-gradient(180deg, #ffffff 0%, #d1d5db 100%);
+}
+
+.nokia-btn:active {
+  border-bottom-width: 2px;
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+/* Primary button - Nokia Blue */
+.nokia-btn-primary {
+  background: linear-gradient(180deg, #1d4ed8 0%, #124191 100%);
+  border-color: #0f2d5c;
+  color: #ffffff;
+}
+
+.nokia-btn-primary:hover {
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+/* Alert button - XpressMusic Orange */
+.nokia-btn-alert {
+  background: linear-gradient(180deg, #ff6b1a 0%, #ff5500 100%);
+  border-color: #cc4400;
+  color: #ffffff;
+}
+
+.nokia-btn-alert:hover {
+  background: linear-gradient(180deg, #ff7d33 0%, #ff6b1a 100%);
+}
+
+/* Success button - Dark Green */
+.nokia-btn-success {
+  background: linear-gradient(180deg, #16a34a 0%, #15803d 100%);
+  border-color: #166534;
+  color: #ffffff;
+}
+
+.nokia-btn-success:hover {
+  background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+}
+
+/* =============================================
+   LCD SCREEN DISPLAY
+   ============================================= */
+
+.lcd-display {
+  background: linear-gradient(180deg, #e8eaf0 0%, #d4d8e0 100%);
+  border: 3px solid #1a1a1a;
+  border-radius: 4px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.lcd-display::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.02) 2px,
+    rgba(0, 0, 0, 0.02) 4px
+  );
+  pointer-events: none;
+  border-radius: 2px;
+}
+
+.lcd-text {
+  color: #1a1a1a;
+  font-family: var(--font-pixel), monospace;
+}
+
+.lcd-text-faded {
+  color: #a1a1c2;
+}
+
+/* =============================================
+   TECHNICAL BADGES
+   ============================================= */
+
+.tech-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.7rem;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 2px solid;
+  border-radius: 2px;
+  font-family: var(--font-pixel), monospace;
+}
+
+.tech-badge-blue {
+  background: #eef2ff;
+  color: #124191;
+  border-color: #124191;
+}
+
+.tech-badge-green {
+  background: #dcfce7;
+  color: #166534;
+  border-color: #166534;
+}
+
+.tech-badge-orange {
+  background: #fff7ed;
+  color: #c2410c;
+  border-color: #ff5500;
+}
+
+.tech-badge-grey {
+  background: #f3f4f6;
+  color: #4b5563;
+  border-color: #9ca3af;
+}
+
+/* =============================================
+   STAT TICKER - Lab Report Style
+   ============================================= */
+
+.stat-ticker {
+  font-family: var(--font-pixel), "VT323", monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+}
+
+.stat-ticker-red {
+  color: #dc2626;
+}
+
+.stat-ticker-green {
+  color: #166534;
+}
+
+.stat-ticker-blue {
+  color: #124191;
+}
+
+/* =============================================
+   TECHNICAL DIVIDER
+   ============================================= */
+
+.tech-divider {
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #124191 10%,
+    #124191 90%,
+    transparent 100%
+  );
+}
+
+.tech-divider-dashed {
+  border: none;
+  border-top: 2px dashed #d1d5db;
+}
+
+/* =============================================
+   THERMAL RECEIPT STYLE
+   ============================================= */
+
+.thermal-receipt {
+  background: #fffef8;
+  border: 1px solid #e5e7eb;
+  border-radius: 2px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1), 4px 4px 0 rgba(0, 0, 0, 0.05);
+  font-family: var(--font-body), "Courier New", monospace;
+  position: relative;
+}
+
+.thermal-receipt::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 4px,
+    #e5e7eb 4px,
+    #e5e7eb 8px
+  );
+}
+
+/* =============================================
+   ANIMATIONS
+   ============================================= */
+
+@keyframes pulse-technical {
   0%,
   100% {
     opacity: 1;
-  }
-  92% {
-    opacity: 1;
-  }
-  93% {
-    opacity: 0.8;
-  }
-  94% {
-    opacity: 1;
-  }
-  97% {
-    opacity: 0.9;
-  }
-  98% {
-    opacity: 1;
-  }
-}
-
-@keyframes glitch {
-  0%,
-  100% {
-    transform: translate(0);
-    filter: hue-rotate(0deg);
-  }
-  20% {
-    transform: translate(-2px, 2px);
-    filter: hue-rotate(90deg);
-  }
-  40% {
-    transform: translate(-2px, -2px);
-    filter: hue-rotate(180deg);
-  }
-  60% {
-    transform: translate(2px, 2px);
-    filter: hue-rotate(270deg);
-  }
-  80% {
-    transform: translate(2px, -2px);
-    filter: hue-rotate(360deg);
-  }
-}
-
-@keyframes rgbShift {
-  0%,
-  100% {
-    text-shadow: -1px 0 #ff00aa, 1px 0 #00e5ff;
-  }
-  25% {
-    text-shadow: -2px 0 #ff00aa, 2px 0 #00e5ff;
   }
   50% {
-    text-shadow: -1px 0 #00e5ff, 1px 0 #ff00aa;
-  }
-  75% {
-    text-shadow: -2px 0 #9d00ff, 2px 0 #39ff14;
+    opacity: 0.5;
   }
 }
 
-@keyframes textGlow {
-  0%,
-  100% {
-    text-shadow: 0 0 10px #39ff14, 0 0 20px #39ff14, 0 0 40px #39ff14,
-      0 0 80px rgba(57, 255, 20, 0.5);
-  }
-  50% {
-    text-shadow: 0 0 5px #39ff14, 0 0 10px #39ff14, 0 0 20px #39ff14,
-      0 0 40px rgba(57, 255, 20, 0.3);
-  }
-}
-
-@keyframes cyberPulse {
-  0%,
-  100% {
-    box-shadow: 0 0 5px #00e5ff, 0 0 10px #00e5ff,
-      inset 0 0 5px rgba(0, 229, 255, 0.1);
-  }
-  50% {
-    box-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff,
-      0 0 40px rgba(0, 229, 255, 0.3), inset 0 0 10px rgba(0, 229, 255, 0.2);
-  }
-}
-
-@keyframes blink {
+@keyframes blink-cursor {
   0%,
   50% {
     opacity: 1;
@@ -208,741 +362,94 @@
   }
 }
 
-@keyframes dataStream {
+@keyframes ticker-scroll {
   0% {
-    background-position: 0% 0%;
+    transform: translateX(100%);
   }
   100% {
-    background-position: 0% 100%;
+    transform: translateX(-100%);
   }
 }
 
-@keyframes chromePulse {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
+.animate-pulse-tech {
+  animation: pulse-technical 1.5s ease-in-out infinite;
 }
 
-@keyframes borderGlow {
-  0%,
-  100% {
-    border-color: #00e5ff;
-    box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
-  }
-  33% {
-    border-color: #ff00aa;
-    box-shadow: 0 0 10px rgba(255, 0, 170, 0.5);
-  }
-  66% {
-    border-color: #9d00ff;
-    box-shadow: 0 0 10px rgba(157, 0, 255, 0.5);
-  }
+.animate-blink-cursor {
+  animation: blink-cursor 1s step-end infinite;
 }
 
 /* =============================================
-   CRT SCREEN EFFECT
-   ============================================= */
-
-.crt-screen {
-  position: relative;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-.crt-screen::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.2),
-    rgba(0, 0, 0, 0.2) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  pointer-events: none;
-  z-index: 9999;
-  animation: flicker 0.15s infinite;
-}
-
-.crt-screen::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 8px;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 229, 255, 0.1) 0%,
-    rgba(255, 0, 170, 0.05) 50%,
-    transparent 100%
-  );
-  animation: scanline 6s linear infinite;
-  pointer-events: none;
-  z-index: 9999;
-}
-
-/* =============================================
-   TEXT EFFECTS
-   ============================================= */
-
-.text-glow {
-  animation: textGlow 2s ease-in-out infinite;
-}
-
-.text-glow-cyan {
-  text-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff,
-    0 0 40px rgba(0, 229, 255, 0.5);
-}
-
-.text-glow-magenta {
-  text-shadow: 0 0 10px #ff00aa, 0 0 20px #ff00aa,
-    0 0 40px rgba(255, 0, 170, 0.5);
-}
-
-.text-glow-purple {
-  text-shadow: 0 0 10px #9d00ff, 0 0 20px #9d00ff,
-    0 0 40px rgba(157, 0, 255, 0.5);
-}
-
-.text-rgb-shift {
-  animation: rgbShift 3s ease-in-out infinite;
-}
-
-.text-glitch {
-  animation: glitch 0.3s ease-in-out infinite;
-}
-
-.text-chrome {
-  background: linear-gradient(
-    180deg,
-    #ffffff 0%,
-    #c0c0c0 25%,
-    #808080 50%,
-    #c0c0c0 75%,
-    #ffffff 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
-}
-
-.blink {
-  animation: blink 1s step-end infinite;
-}
-
-/* =============================================
-   Y2K NOKIA BORDER STYLES
-   ============================================= */
-
-.nokia-border {
-  border: 2px solid rgba(0, 229, 255, 0.3);
-  background: linear-gradient(
-    135deg,
-    rgba(0, 59, 122, 0.2) 0%,
-    rgba(0, 20, 40, 0.8) 50%,
-    rgba(0, 59, 122, 0.2) 100%
-  );
-  box-shadow: 0 0 20px rgba(0, 229, 255, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.3);
-  position: relative;
-}
-
-.nokia-border::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(0, 229, 255, 0.5) 50%,
-    transparent 100%
-  );
-}
-
-.nokia-border-glow {
-  border: 2px solid #00e5ff;
-  animation: cyberPulse 2s ease-in-out infinite;
-}
-
-.nokia-border-chrome {
-  border: 3px solid;
-  border-image: linear-gradient(
-      135deg,
-      #e8e8e8 0%,
-      #c0c0c0 25%,
-      #808080 50%,
-      #c0c0c0 75%,
-      #e8e8e8 100%
-    )
-    1;
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5),
-    inset 2px 2px 0 rgba(255, 255, 255, 0.2),
-    inset -2px -2px 0 rgba(0, 0, 0, 0.2);
-}
-
-.nokia-border-rainbow {
-  border: 2px solid;
-  animation: borderGlow 3s ease-in-out infinite;
-}
-
-/* =============================================
-   Y2K BUTTON STYLES
-   ============================================= */
-
-.nokia-button {
-  position: relative;
-  border: 2px solid;
-  border-image: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.3) 0%,
-      rgba(0, 229, 255, 0.5) 50%,
-      rgba(0, 0, 0, 0.3) 100%
-    )
-    1;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 59, 122, 0.8) 0%,
-    rgba(0, 30, 60, 0.9) 50%,
-    rgba(0, 20, 40, 1) 100%
-  );
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 229, 255, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  transition: all 0.1s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.nokia-button:hover {
-  background: linear-gradient(
-    180deg,
-    rgba(0, 229, 255, 0.3) 0%,
-    rgba(0, 59, 122, 0.8) 50%,
-    rgba(0, 30, 60, 0.9) 100%
-  );
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 229, 255, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
-
-.nokia-button:active {
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 229, 255, 0.2);
-  transform: translateY(3px);
-}
-
-.nokia-button-chrome {
-  background: linear-gradient(
-    180deg,
-    #e8e8e8 0%,
-    #c0c0c0 30%,
-    #a0a0a0 50%,
-    #c0c0c0 70%,
-    #e8e8e8 100%
-  );
-  background-size: 100% 200%;
-  animation: chromePulse 3s ease-in-out infinite;
-  border: 3px outset #c0c0c0;
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4),
-    inset 2px 2px 0 rgba(255, 255, 255, 0.5),
-    inset -2px -2px 0 rgba(0, 0, 0, 0.2);
-  color: #003b7a;
-  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
-}
-
-.nokia-button-chrome:active {
-  border-style: inset;
-  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4),
-    inset -2px -2px 0 rgba(255, 255, 255, 0.3),
-    inset 2px 2px 0 rgba(0, 0, 0, 0.2);
-  transform: translate(2px, 2px);
-}
-
-/* =============================================
-   LCD & SCREEN EFFECTS
-   ============================================= */
-
-.lcd-screen {
-  background: linear-gradient(180deg, #001a33 0%, #002244 50%, #001a33 100%);
-  border: 4px solid;
-  border-image: linear-gradient(
-      135deg,
-      #404040 0%,
-      #606060 25%,
-      #404040 50%,
-      #606060 75%,
-      #404040 100%
-    )
-    1;
-  box-shadow: inset 0 0 30px rgba(0, 229, 255, 0.1),
-    inset 0 0 60px rgba(57, 255, 20, 0.05);
-  image-rendering: pixelated;
-}
-
-.lcd-classic {
-  background: linear-gradient(180deg, #9bbc0f 0%, #8bac0f 50%, #7b9c0f 100%);
-  color: #0f380f;
-}
-
-.pixelated {
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-}
-
-/* =============================================
-   Y2K PROGRESS BAR
-   ============================================= */
-
-.nokia-progress {
-  height: 20px;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 20, 40, 0.8) 0%,
-    rgba(0, 30, 60, 0.6) 100%
-  );
-  border: 2px solid rgba(0, 229, 255, 0.3);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
-}
-
-.nokia-progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #003b7a 0%, #00e5ff 50%, #ff00aa 100%);
-  box-shadow: 0 0 10px #00e5ff, 0 0 20px rgba(0, 229, 255, 0.5);
-  position: relative;
-}
-
-.nokia-progress-fill::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 50%;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.3) 0%,
-    transparent 100%
-  );
-}
-
-/* =============================================
-   VIEWFINDER OVERLAY
-   ============================================= */
-
-.viewfinder-corner {
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  border-color: #00e5ff;
-  filter: drop-shadow(0 0 5px #00e5ff);
-}
-
-.viewfinder-corner-tl {
-  top: 20px;
-  left: 20px;
-  border-top: 3px solid;
-  border-left: 3px solid;
-}
-
-.viewfinder-corner-tr {
-  top: 20px;
-  right: 20px;
-  border-top: 3px solid;
-  border-right: 3px solid;
-}
-
-.viewfinder-corner-bl {
-  bottom: 20px;
-  left: 20px;
-  border-bottom: 3px solid;
-  border-left: 3px solid;
-}
-
-.viewfinder-corner-br {
-  bottom: 20px;
-  right: 20px;
-  border-bottom: 3px solid;
-  border-right: 3px solid;
-}
-
-/* =============================================
-   Y2K CARDS & PANELS
-   ============================================= */
-
-.y2k-panel {
-  background: linear-gradient(
-    135deg,
-    rgba(0, 59, 122, 0.3) 0%,
-    rgba(0, 20, 40, 0.9) 50%,
-    rgba(157, 0, 255, 0.1) 100%
-  );
-  border: 1px solid rgba(0, 229, 255, 0.2);
-  backdrop-filter: blur(10px);
-  position: relative;
-  overflow: hidden;
-}
-
-.y2k-panel::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(0, 229, 255, 0.1) 50%,
-    transparent 100%
-  );
-  animation: dataStream 3s linear infinite;
-}
-
-.translucent-card {
-  background: rgba(0, 30, 60, 0.4);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 229, 255, 0.3);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-/* =============================================
-   CIRCUIT BOARD PATTERN
-   ============================================= */
-
-.circuit-pattern {
-  background-image: linear-gradient(
-      90deg,
-      rgba(0, 229, 255, 0.03) 1px,
-      transparent 1px
-    ),
-    linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
-    radial-gradient(
-      circle at 25% 25%,
-      rgba(0, 229, 255, 0.05) 2px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 75% 75%,
-      rgba(255, 0, 170, 0.05) 2px,
-      transparent 2px
-    );
-  background-size: 40px 40px, 40px 40px, 80px 80px, 80px 80px;
-}
-
-.data-grid {
-  background-image: linear-gradient(
-      0deg,
-      transparent 24%,
-      rgba(0, 229, 255, 0.05) 25%,
-      rgba(0, 229, 255, 0.05) 26%,
-      transparent 27%,
-      transparent 74%,
-      rgba(0, 229, 255, 0.05) 75%,
-      rgba(0, 229, 255, 0.05) 76%,
-      transparent 77%,
-      transparent
-    ),
-    linear-gradient(
-      90deg,
-      transparent 24%,
-      rgba(0, 229, 255, 0.05) 25%,
-      rgba(0, 229, 255, 0.05) 26%,
-      transparent 27%,
-      transparent 74%,
-      rgba(0, 229, 255, 0.05) 75%,
-      rgba(0, 229, 255, 0.05) 76%,
-      transparent 77%,
-      transparent
-    );
-  background-size: 60px 60px;
-}
-
-/* =============================================
-   BASE STYLES
-   ============================================= */
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-    font-family: var(--font-retro), monospace;
-  }
-}
-
-/* =============================================
-   CUSTOM SCROLLBAR - Y2K STYLE
+   SCROLLBAR - Technical Style
    ============================================= */
 
 ::-webkit-scrollbar {
-  width: 14px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: linear-gradient(
-    90deg,
-    rgba(0, 20, 40, 0.8) 0%,
-    rgba(0, 30, 60, 0.6) 100%
-  );
-  border: 1px solid rgba(0, 229, 255, 0.2);
+  background: #e5e7eb;
+  border: 1px solid #d1d5db;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #003b7a 0%, #00e5ff 50%, #003b7a 100%);
-  border: 1px solid rgba(0, 229, 255, 0.5);
-  box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.3);
+  background: #124191;
+  border: 2px solid #e5e7eb;
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #00e5ff 0%, #ff00aa 50%, #00e5ff 100%);
+  background: #1d4ed8;
 }
 
 /* =============================================
-   SELECTION STYLES
+   SELECTION
    ============================================= */
 
 ::selection {
-  background: rgba(0, 229, 255, 0.4);
-  color: #ffffff;
+  background: rgba(18, 65, 145, 0.2);
+  color: #1a1a1a;
 }
 
 /* =============================================
    UTILITY CLASSES
    ============================================= */
 
-.y2k-gradient-text {
-  background: linear-gradient(90deg, #00e5ff 0%, #ff00aa 50%, #9d00ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.font-pixel {
+  font-family: var(--font-pixel), "Press Start 2P", monospace;
 }
 
-.y2k-gradient-bg {
-  background: linear-gradient(
-    135deg,
-    #003b7a 0%,
-    #00e5ff 25%,
-    #ff00aa 50%,
-    #9d00ff 75%,
-    #003b7a 100%
-  );
-  background-size: 400% 400%;
-  animation: chromePulse 10s ease-in-out infinite;
+.font-mono-tech {
+  font-family: var(--font-body), "DM Mono", "Space Mono", monospace;
 }
 
-.cyber-glow {
-  filter: drop-shadow(0 0 10px currentColor);
+.border-tech {
+  border: 2px solid #1a1a1a;
 }
 
-.chrome-shine {
-  position: relative;
-  overflow: hidden;
+.border-nokia {
+  border: 2px solid #124191;
 }
 
-.chrome-shine::after {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    45deg,
-    transparent 40%,
-    rgba(255, 255, 255, 0.3) 50%,
-    transparent 60%
-  );
-  animation: chromePulse 3s linear infinite;
+.shadow-hard {
+  box-shadow: 3px 3px 0 rgba(26, 26, 26, 0.15);
+}
+
+.shadow-hard-blue {
+  box-shadow: 3px 3px 0 rgba(18, 65, 145, 0.2);
 }
 
 /* =============================================
-   CRT EFFECT ANIMATIONS
+   SNAKE OVERLAY COLORS (INK ON PAPER)
    ============================================= */
 
-@keyframes rgb-scanline-sweep {
-  0% {
-    top: -10px;
-    opacity: 0.8;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    top: 100%;
-    opacity: 0.8;
-  }
+.snake-ink {
+  --snake-color: #006400;
+  --snake-glow: rgba(0, 100, 0, 0.3);
 }
 
-@keyframes secondary-sweep {
-  0% {
-    top: -5px;
-  }
-  100% {
-    top: 100%;
-  }
-}
-
-@keyframes noise-shift {
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
-  10% {
-    transform: translate(-1%, -1%);
-  }
-  20% {
-    transform: translate(1%, 1%);
-  }
-  30% {
-    transform: translate(-1%, 1%);
-  }
-  40% {
-    transform: translate(1%, -1%);
-  }
-  50% {
-    transform: translate(-1%, 0);
-  }
-  60% {
-    transform: translate(1%, 0);
-  }
-  70% {
-    transform: translate(0, -1%);
-  }
-  80% {
-    transform: translate(0, 1%);
-  }
-  90% {
-    transform: translate(-1%, -1%);
-  }
-}
-
-@keyframes aggressive-flicker {
-  0% {
-    opacity: 0;
-  }
-  2% {
-    opacity: 0.03;
-    background: rgba(0, 229, 255, 0.01);
-  }
-  4% {
-    opacity: 0;
-  }
-  6% {
-    opacity: 0.02;
-    background: rgba(255, 0, 170, 0.01);
-  }
-  8% {
-    opacity: 0;
-  }
-  92% {
-    opacity: 0;
-  }
-  94% {
-    opacity: 0.02;
-    background: rgba(57, 255, 20, 0.01);
-  }
-  96% {
-    opacity: 0;
-  }
-  98% {
-    opacity: 0.01;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes distortion-shift {
-  0% {
-    transform: translateY(0) scaleX(1);
-  }
-  25% {
-    transform: translateY(-50px) scaleX(1.001);
-  }
-  50% {
-    transform: translateY(-100px) scaleX(0.999);
-  }
-  75% {
-    transform: translateY(-150px) scaleX(1.001);
-  }
-  100% {
-    transform: translateY(-200px) scaleX(1);
-  }
-}
-
-@keyframes snake-crawl {
-  0%,
-  100% {
-    stroke-dashoffset: 0;
-  }
-  50% {
-    stroke-dashoffset: 20;
-  }
-}
-
-@keyframes float-slow {
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-  33% {
-    transform: translate(30px, -30px) scale(1.05);
-  }
-  66% {
-    transform: translate(-20px, 20px) scale(0.95);
-  }
-}
-
-@keyframes pulse-slow {
-  0%,
-  100% {
-    opacity: 0.1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.15;
-    transform: scale(1.1);
-  }
-}
-
-@keyframes scanBeam {
-  0%,
-  100% {
-    transform: translateY(-100vh);
-  }
-  50% {
-    transform: translateY(100vh);
-  }
-}
-
-@keyframes loader-pulse {
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-@keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+.snake-black {
+  --snake-color: #1a1a1a;
+  --snake-glow: rgba(26, 26, 26, 0.2);
 }

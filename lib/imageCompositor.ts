@@ -228,7 +228,7 @@ export async function compositeImageWithOverlay(
       ctx.fillStyle = "rgba(0, 255, 0, 0.3)";
       ctx.font = "10px monospace";
       ctx.textAlign = "left";
-      ctx.fillText("MEND-AR", 10, height - 10);
+      ctx.fillText("RETHREAD", 10, height - 10);
 
       // Return the composite image
       resolve(canvas.toDataURL("image/jpeg", 0.9));
