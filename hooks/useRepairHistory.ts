@@ -33,7 +33,7 @@ export interface ProfileStats {
   carbonOffset: number;
 }
 
-const STORAGE_KEY = "mend_ar_history";
+const STORAGE_KEY = "rethread_history";
 const INITIAL_SNAKE_LENGTH = 3;
 
 // ============================================

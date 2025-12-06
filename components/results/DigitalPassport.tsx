@@ -4,14 +4,12 @@ import { motion } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
 
 /**
- * DigitalPassport - Nokia-style employee badge for repaired garments
+ * DigitalPassport - Nokia-style certificate for repaired garments
  *
  * Displays:
  * - QR code containing analysis data
  * - Snake score with XP
  * - Repair certification details
- *
- * Animates: Slides up from bottom when displayed
  */
 
 /** Passport-specific data structure */
@@ -57,7 +55,8 @@ export default function DigitalPassport({
         damping: 25,
         stiffness: 200,
       }}
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/80 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-50 flex items-end justify-center p-4"
+      style={{ background: "rgba(242, 243, 245, 0.95)" }}
       onClick={onClose}
     >
       <motion.div
@@ -67,126 +66,185 @@ export default function DigitalPassport({
         className="w-full max-w-md mb-8"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Nokia Employee Badge Style Card */}
-        <div className="nokia-border bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] overflow-hidden">
+        {/* Nokia Clean Room Badge Card */}
+        <div className="tech-card overflow-hidden">
           {/* Badge Header - Nokia Blue */}
-          <div className="bg-[#124191] p-4 relative overflow-hidden">
-            <div
-              className="absolute inset-0 opacity-10"
-              style={{
-                backgroundImage: `repeating-linear-gradient(
-                  45deg,
-                  transparent,
-                  transparent 10px,
-                  rgba(255,255,255,0.1) 10px,
-                  rgba(255,255,255,0.1) 20px
-                )`,
-              }}
-            />
-            <div className="relative flex items-center justify-between">
+          <div
+            className="tech-card-header py-4"
+            style={{ background: "#124191" }}
+          >
+            <div className="flex items-center justify-between">
               <div>
                 <div
-                  className="text-xs text-white/70 tracking-widest"
-                  style={{ fontFamily: "var(--font-pixel)" }}
+                  className="text-[10px] tracking-widest mb-1"
+                  style={{ color: "rgba(255,255,255,0.7)" }}
                 >
-                  MEND-AR CERTIFIED
+                  RETHREAD CERTIFIED
                 </div>
-                <div
-                  className="text-lg text-white tracking-wider mt-1"
-                  style={{ fontFamily: "var(--font-pixel)" }}
-                >
-                  DIGITAL PASSPORT
-                </div>
+                <div className="text-lg tracking-wider">DIGITAL PASSPORT</div>
               </div>
               <div className="text-3xl">🐍</div>
             </div>
           </div>
 
           {/* Badge Body */}
-          <div className="p-4 space-y-4">
+          <div className="tech-card-body p-5">
             {/* Photo + QR Section */}
-            <div className="flex gap-4">
+            <div className="flex gap-4 mb-5">
               {/* Garment Thumbnail */}
-              <div className="nokia-border bg-[#0a0a0a] p-1 w-24 h-24 shrink-0">
+              <div className="lcd-display p-1 w-24 h-24 shrink-0">
                 <img
                   src={imageSrc}
                   alt="Repaired garment"
-                  className="w-full h-full object-cover pixelated"
+                  className="w-full h-full object-cover"
                 />
               </div>
 
               {/* QR Code */}
-              <div className="nokia-border bg-white p-2 flex items-center justify-center">
+              <div
+                className="p-2 rounded-sm flex items-center justify-center"
+                style={{ background: "#FFFFFF", border: "2px solid #1A1A1A" }}
+              >
                 <QRCodeSVG
                   value={qrData}
                   size={80}
                   level="M"
                   bgColor="#ffffff"
-                  fgColor="#0a0a0a"
+                  fgColor="#1A1A1A"
                 />
               </div>
 
               {/* Snake Score */}
               <div className="flex-1 flex flex-col justify-center items-center">
-                <div className="text-[#00ffff] text-xs tracking-widest mb-1">
+                <div
+                  className="text-xs font-mono-tech tracking-wider mb-1"
+                  style={{ color: "#124191" }}
+                >
                   SNAKE SCORE
                 </div>
                 <div
-                  className="text-[#00ff00] text-3xl font-bold"
-                  style={{ fontFamily: "var(--font-pixel)" }}
+                  className="text-3xl font-bold font-pixel"
+                  style={{ color: "#166534" }}
                 >
                   +{analysisData.snakeScore}
                 </div>
-                <div className="text-[#ffaa00] text-sm tracking-widest">XP</div>
+                <div
+                  className="text-sm font-mono-tech tracking-widest"
+                  style={{ color: "#FF5500" }}
+                >
+                  XP
+                </div>
               </div>
             </div>
 
             {/* Divider */}
-            <div className="border-t border-dashed border-[#333] relative">
-              <div className="absolute -left-4 -top-2 w-4 h-4 bg-[#0a0a0a] rounded-full" />
-              <div className="absolute -right-4 -top-2 w-4 h-4 bg-[#0a0a0a] rounded-full" />
+            <div
+              className="border-t-2 border-dashed relative my-4"
+              style={{ borderColor: "#E5E7EB" }}
+            >
+              <div
+                className="absolute -left-5 -top-2 w-4 h-4 rounded-full"
+                style={{ background: "#F2F3F5" }}
+              />
+              <div
+                className="absolute -right-5 -top-2 w-4 h-4 rounded-full"
+                style={{ background: "#F2F3F5" }}
+              />
             </div>
 
             {/* Repair Details Grid */}
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="bg-[#1a1a1a] border border-[#333] p-2">
-                <span className="text-[#666] block">FABRIC</span>
-                <span className="text-[#00ff00] uppercase">
+            <div className="grid grid-cols-2 gap-3 mb-5">
+              <div
+                className="p-3 rounded-sm"
+                style={{ background: "#F3F4F6", border: "2px solid #E5E7EB" }}
+              >
+                <span
+                  className="text-[10px] font-mono-tech block mb-1"
+                  style={{ color: "#6B7280" }}
+                >
+                  FABRIC
+                </span>
+                <span
+                  className="text-sm font-bold font-pixel uppercase"
+                  style={{ color: "#166534" }}
+                >
                   {analysisData.fabric}
                 </span>
               </div>
-              <div className="bg-[#1a1a1a] border border-[#333] p-2">
-                <span className="text-[#666] block">TECHNIQUE</span>
-                <span className="text-[#00ff00]">
+              <div
+                className="p-3 rounded-sm"
+                style={{ background: "#F3F4F6", border: "2px solid #E5E7EB" }}
+              >
+                <span
+                  className="text-[10px] font-mono-tech block mb-1"
+                  style={{ color: "#6B7280" }}
+                >
+                  TECHNIQUE
+                </span>
+                <span
+                  className="text-sm font-bold font-pixel"
+                  style={{ color: "#124191" }}
+                >
                   {analysisData.repairTechnique}
                 </span>
               </div>
-              <div className="bg-[#1a1a1a] border border-[#333] p-2">
-                <span className="text-[#666] block">DIFFICULTY</span>
-                <span className="text-[#ffaa00] uppercase">
+              <div
+                className="p-3 rounded-sm"
+                style={{ background: "#F3F4F6", border: "2px solid #E5E7EB" }}
+              >
+                <span
+                  className="text-[10px] font-mono-tech block mb-1"
+                  style={{ color: "#6B7280" }}
+                >
+                  DIFFICULTY
+                </span>
+                <span
+                  className="text-sm font-bold font-pixel uppercase"
+                  style={{ color: "#FF5500" }}
+                >
                   {analysisData.difficulty}
                 </span>
               </div>
-              <div className="bg-[#1a1a1a] border border-[#333] p-2">
-                <span className="text-[#666] block">VALUE</span>
-                <span className="text-[#00ffff]">
+              <div
+                className="p-3 rounded-sm"
+                style={{ background: "#F3F4F6", border: "2px solid #E5E7EB" }}
+              >
+                <span
+                  className="text-[10px] font-mono-tech block mb-1"
+                  style={{ color: "#6B7280" }}
+                >
+                  VALUE
+                </span>
+                <span
+                  className="text-sm font-bold font-pixel"
+                  style={{ color: "#166534" }}
+                >
                   +${analysisData.marketValueRepaired}
                 </span>
               </div>
             </div>
 
             {/* Certificate Footer */}
-            <div className="bg-[#0f0f0f] border border-[#222] p-3 text-center">
-              <div className="text-[#666] text-[10px] tracking-widest mb-1">
+            <div
+              className="p-4 rounded-sm text-center"
+              style={{ background: "#F9FAFB", border: "2px solid #E5E7EB" }}
+            >
+              <div
+                className="text-[10px] font-mono-tech tracking-widest mb-1"
+                style={{ color: "#6B7280" }}
+              >
                 VERIFICATION ID
               </div>
               <div
-                className="text-[#124191] text-xs tracking-wider"
-                style={{ fontFamily: "monospace" }}
+                className="text-xs font-mono-tech tracking-wider"
+                style={{ color: "#124191" }}
               >
                 {analysisData.analysisId}
               </div>
-              <div className="text-[#444] text-[10px] mt-2">
+              <div
+                className="text-[10px] font-mono-tech mt-2"
+                style={{ color: "#9CA3AF" }}
+              >
                 {new Date(analysisData.timestamp).toLocaleDateString("en-US", {
                   year: "numeric",
                   month: "short",
@@ -196,10 +254,10 @@ export default function DigitalPassport({
             </div>
 
             {/* Actions */}
-            <div className="flex gap-2">
+            <div className="flex gap-3 mt-5">
               <button
                 onClick={onClose}
-                className="flex-1 nokia-button bg-[#1a1a1a] text-[#B0B0B0] hover:text-[#00ff00] py-3 text-sm tracking-widest transition-colors"
+                className="flex-1 nokia-btn py-3 text-sm font-pixel tracking-widest"
               >
                 ◀ BACK
               </button>
@@ -208,7 +266,7 @@ export default function DigitalPassport({
                   // Future: Share functionality
                   console.log("[Passport] Share clicked");
                 }}
-                className="flex-1 nokia-button bg-[#124191] text-white hover:bg-[#00ffff] hover:text-[#0a0a0a] py-3 text-sm tracking-widest transition-colors"
+                className="flex-1 nokia-btn nokia-btn-primary py-3 text-sm font-pixel tracking-widest"
               >
                 SHARE 📤
               </button>

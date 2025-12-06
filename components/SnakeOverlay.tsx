@@ -12,18 +12,32 @@ interface SnakeOverlayProps {
   width?: number;
   height?: number;
   animated?: boolean;
-  stitchColor?: string;
+  /** 
+   * Snake color theme:
+   * - "ink" = Dark green (#006400) - like ink on paper
+   * - "black" = Pure black (#1A1A1A) - plotter drawing style
+   * - custom hex color
+   */
+  stitchColor?: "ink" | "black" | string;
 }
+
+const COLOR_MAP: Record<string, string> = {
+  ink: "#006400",
+  black: "#1A1A1A",
+};
 
 export default function SnakeOverlay({
   coordinates,
   width = 640,
   height = 480,
   animated = true,
-  stitchColor = "#00ff00",
+  stitchColor = "ink",
 }: SnakeOverlayProps) {
   const [visibleSegments, setVisibleSegments] = useState(0);
   const [showGlow, setShowGlow] = useState(false);
+
+  // Resolve color
+  const resolvedColor = COLOR_MAP[stitchColor] || stitchColor;
 
   useEffect(() => {
     if (!animated) {
@@ -130,58 +144,22 @@ export default function SnakeOverlay({
       style={{ overflow: "visible" }}
     >
       <defs>
-        {/* Glow filter */}
-        <filter id="snakeGlow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-          <feMerge>
-            <feMergeNode in="coloredBlur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
+        {/* Subtle shadow filter for ink effect */}
+        <filter id="inkShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="1" dy="1" stdDeviation="0.5" floodOpacity="0.3" />
         </filter>
-        
-        {/* Dash pattern for stitch effect */}
-        <pattern
-          id="stitchPattern"
-          patternUnits="userSpaceOnUse"
-          width="12"
-          height="12"
-        >
-          <circle cx="6" cy="6" r="2" fill={stitchColor} />
-        </pattern>
       </defs>
 
-      {/* Main snake path - outer glow */}
-      {showGlow && (
-        <path
-          d={snakePath}
-          fill="none"
-          stroke={stitchColor}
-          strokeWidth="8"
-          opacity="0.3"
-          filter="url(#snakeGlow)"
-        />
-      )}
-
-      {/* Main snake path - core line */}
+      {/* Main snake path - core line (ink on paper) */}
       <path
         d={snakePath}
         fill="none"
-        stroke={stitchColor}
-        strokeWidth="4"
+        stroke={resolvedColor}
+        strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
+        filter="url(#inkShadow)"
         className={animated ? "transition-all duration-100" : ""}
-      />
-
-      {/* Inner highlight */}
-      <path
-        d={snakePath}
-        fill="none"
-        stroke="#ffffff"
-        strokeWidth="1"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        opacity="0.5"
       />
 
       {/* Stitch marks */}
@@ -193,13 +171,28 @@ export default function SnakeOverlay({
             y1={mark.y1}
             x2={mark.x2}
             y2={mark.y2}
-            stroke={stitchColor}
+            stroke={resolvedColor}
             strokeWidth="2"
             strokeLinecap="round"
+            filter="url(#inkShadow)"
           />
           {/* Stitch holes */}
-          <circle cx={mark.x1} cy={mark.y1} r="2" fill="#0a0a0a" stroke={stitchColor} strokeWidth="1" />
-          <circle cx={mark.x2} cy={mark.y2} r="2" fill="#0a0a0a" stroke={stitchColor} strokeWidth="1" />
+          <circle 
+            cx={mark.x1} 
+            cy={mark.y1} 
+            r="2" 
+            fill="#FFFFFF" 
+            stroke={resolvedColor} 
+            strokeWidth="1" 
+          />
+          <circle 
+            cx={mark.x2} 
+            cy={mark.y2} 
+            r="2" 
+            fill="#FFFFFF" 
+            stroke={resolvedColor} 
+            strokeWidth="1" 
+          />
         </g>
       ))}
 
@@ -210,17 +203,18 @@ export default function SnakeOverlay({
             cx={coordinates[0].x}
             cy={coordinates[0].y}
             r="8"
-            fill="#0a0a0a"
-            stroke={stitchColor}
+            fill="#FFFFFF"
+            stroke={resolvedColor}
             strokeWidth="2"
           />
           <text
             x={coordinates[0].x}
             y={coordinates[0].y + 4}
             textAnchor="middle"
-            fill={stitchColor}
+            fill={resolvedColor}
             fontSize="10"
             fontFamily="monospace"
+            fontWeight="bold"
           >
             S
           </text>
@@ -234,20 +228,21 @@ export default function SnakeOverlay({
             cx={coordinates[coordinates.length - 1].x}
             cy={coordinates[coordinates.length - 1].y}
             r="10"
-            fill={stitchColor}
+            fill={resolvedColor}
             className={showGlow ? "animate-pulse" : ""}
           />
+          {/* Eyes */}
           <circle
             cx={coordinates[coordinates.length - 1].x - 3}
             cy={coordinates[coordinates.length - 1].y - 2}
             r="2"
-            fill="#0a0a0a"
+            fill="#FFFFFF"
           />
           <circle
             cx={coordinates[coordinates.length - 1].x + 3}
             cy={coordinates[coordinates.length - 1].y - 2}
             r="2"
-            fill="#0a0a0a"
+            fill="#FFFFFF"
           />
         </g>
       )}
@@ -258,15 +253,15 @@ export default function SnakeOverlay({
           x={width / 2}
           y={height - 20}
           textAnchor="middle"
-          fill={stitchColor}
-          fontSize="14"
+          fill={resolvedColor}
+          fontSize="12"
           fontFamily="monospace"
+          fontWeight="bold"
           className="animate-pulse"
         >
-          STITCHING... {Math.round((visibleSegments / coordinates.length) * 100)}%
+          /// STITCHING... {Math.round((visibleSegments / coordinates.length) * 100)}%
         </text>
       )}
     </svg>
   );
 }
-

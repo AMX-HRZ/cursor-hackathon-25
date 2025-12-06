@@ -5,8 +5,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 /**
  * SnakeOverlay - Isolated SVG drawing logic for repair stitch visualization
  *
- * This component handles ONLY the visual representation of the snake stitch pattern.
- * Features CSS keyframe animation using stroke-dasharray for "drawing" effect.
+ * Y2K Laboratory Schematic Style:
+ * - Dark green or black lines (ink on paper / plotter drawing)
+ * - High contrast against light backgrounds
+ * - Technical, precise appearance
  */
 
 interface Coordinate {
@@ -19,17 +21,22 @@ interface SnakeOverlayProps {
   width?: number;
   height?: number;
   animated?: boolean;
-  color?: string;
-  glowIntensity?: "low" | "medium" | "high";
+  /** 
+   * Color theme:
+   * - "ink" = Dark green (#006400)
+   * - "black" = Tech black (#1A1A1A)
+   * - "nokia" = Nokia blue (#124191)
+   * - custom hex color
+   */
+  color?: "ink" | "black" | "nokia" | string;
   showNodes?: boolean;
   strokeWidth?: number;
 }
 
-// Glow filter intensities
-const GLOW_CONFIGS = {
-  low: { blur: 2, opacity: 0.3 },
-  medium: { blur: 4, opacity: 0.5 },
-  high: { blur: 6, opacity: 0.7 },
+const COLOR_MAP: Record<string, string> = {
+  ink: "#006400",
+  black: "#1A1A1A",
+  nokia: "#124191",
 };
 
 export default function SnakeOverlay({
@@ -37,8 +44,7 @@ export default function SnakeOverlay({
   width = 640,
   height = 480,
   animated = true,
-  color = "#00ff00",
-  glowIntensity = "medium",
+  color = "ink",
   showNodes = true,
   strokeWidth = 3,
 }: SnakeOverlayProps) {
@@ -46,6 +52,9 @@ export default function SnakeOverlay({
   const [pathLength, setPathLength] = useState(0);
   const [isAnimating, setIsAnimating] = useState(animated);
   const [animationComplete, setAnimationComplete] = useState(!animated);
+
+  // Resolve color from presets or use custom
+  const resolvedColor = COLOR_MAP[color] || color;
 
   // Generate smooth bezier curve path
   const path = useMemo(() => {
@@ -149,8 +158,6 @@ export default function SnakeOverlay({
     return marks;
   }, [coordinates]);
 
-  const glowConfig = GLOW_CONFIGS[glowIntensity];
-
   if (coordinates.length < 2) return null;
 
   // Unique ID for this instance to avoid CSS conflicts
@@ -168,56 +175,28 @@ export default function SnakeOverlay({
       style={{ overflow: "visible" }}
     >
       <defs>
-        {/* Glow filter */}
+        {/* Ink shadow filter for plotter effect */}
         <filter
-          id={`${instanceId}-glow`}
-          x="-100%"
-          y="-100%"
-          width="300%"
-          height="300%"
+          id={`${instanceId}-shadow`}
+          x="-10%"
+          y="-10%"
+          width="120%"
+          height="120%"
         >
-          <feGaussianBlur stdDeviation={glowConfig.blur} result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
+          <feDropShadow dx="1" dy="1" stdDeviation="0.5" floodOpacity="0.25" />
         </filter>
-
-        {/* Animated dash pattern */}
-        <linearGradient
-          id={`${instanceId}-gradient`}
-          x1="0%"
-          y1="0%"
-          x2="100%"
-          y2="0%"
-        >
-          <stop offset="0%" stopColor={color} stopOpacity="0.8" />
-          <stop offset="50%" stopColor="#00ffff" stopOpacity="1" />
-          <stop offset="100%" stopColor={color} stopOpacity="0.8" />
-        </linearGradient>
       </defs>
-
-      {/* Background glow layer - only show when animation complete */}
-      {animationComplete && (
-        <path
-          d={path}
-          fill="none"
-          stroke={color}
-          strokeWidth={strokeWidth * 4}
-          opacity={glowConfig.opacity}
-          filter={`url(#${instanceId}-glow)`}
-        />
-      )}
 
       {/* Main stitch path with snake drawing animation */}
       <path
         ref={pathRef}
         d={path}
         fill="none"
-        stroke={`url(#${instanceId}-gradient)`}
+        stroke={resolvedColor}
         strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeLinejoin="round"
+        filter={`url(#${instanceId}-shadow)`}
         style={
           isAnimating && pathLength > 0
             ? {
@@ -227,17 +206,6 @@ export default function SnakeOverlay({
               }
             : {}
         }
-      />
-
-      {/* Center highlight */}
-      <path
-        d={path}
-        fill="none"
-        stroke="#ffffff"
-        strokeWidth={1}
-        strokeLinecap="round"
-        opacity={animationComplete ? 0.4 : 0}
-        className="transition-opacity duration-500"
       />
 
       {/* Stitch marks - fade in after animation */}
@@ -254,10 +222,10 @@ export default function SnakeOverlay({
             y1={mark.y1}
             x2={mark.x2}
             y2={mark.y2}
-            stroke={color}
+            stroke={resolvedColor}
             strokeWidth={2}
             strokeLinecap="round"
-            opacity={0.8}
+            filter={`url(#${instanceId}-shadow)`}
           />
           {/* Node points */}
           {showNodes && (
@@ -266,16 +234,16 @@ export default function SnakeOverlay({
                 cx={mark.x1}
                 cy={mark.y1}
                 r={3}
-                fill="#0a0a0a"
-                stroke={color}
+                fill="#FFFFFF"
+                stroke={resolvedColor}
                 strokeWidth={1.5}
               />
               <circle
                 cx={mark.x2}
                 cy={mark.y2}
                 r={3}
-                fill="#0a0a0a"
-                stroke={color}
+                fill="#FFFFFF"
+                stroke={resolvedColor}
                 strokeWidth={1.5}
               />
             </>
@@ -292,15 +260,15 @@ export default function SnakeOverlay({
           cx={coordinates[0].x}
           cy={coordinates[0].y}
           r={10}
-          fill="#0a0a0a"
-          stroke={color}
+          fill="#FFFFFF"
+          stroke={resolvedColor}
           strokeWidth={2}
         />
         <text
           x={coordinates[0].x}
           y={coordinates[0].y + 4}
           textAnchor="middle"
-          fill={color}
+          fill={resolvedColor}
           fontSize="10"
           fontFamily="monospace"
           fontWeight="bold"
@@ -309,7 +277,7 @@ export default function SnakeOverlay({
         </text>
       </g>
 
-      {/* End marker (snake head) - pulses when complete */}
+      {/* End marker (snake head) */}
       {coordinates.length > 1 && (
         <g
           className={animationComplete ? "animate-pulse" : ""}
@@ -320,21 +288,20 @@ export default function SnakeOverlay({
             cx={coordinates[coordinates.length - 1].x}
             cy={coordinates[coordinates.length - 1].y}
             r={12}
-            fill={color}
-            filter={`url(#${instanceId}-glow)`}
+            fill={resolvedColor}
           />
           {/* Eyes */}
           <circle
             cx={coordinates[coordinates.length - 1].x - 4}
             cy={coordinates[coordinates.length - 1].y - 3}
             r={2}
-            fill="#0a0a0a"
+            fill="#FFFFFF"
           />
           <circle
             cx={coordinates[coordinates.length - 1].x + 4}
             cy={coordinates[coordinates.length - 1].y - 3}
             r={2}
-            fill="#0a0a0a"
+            fill="#FFFFFF"
           />
         </g>
       )}
@@ -345,12 +312,13 @@ export default function SnakeOverlay({
           x={width / 2}
           y={height - 30}
           textAnchor="middle"
-          fill={color}
-          fontSize="12"
+          fill={resolvedColor}
+          fontSize="11"
           fontFamily="monospace"
+          fontWeight="bold"
           className="animate-pulse"
         >
-          GENERATING REPAIR PATH...
+          /// GENERATING REPAIR PATH...
         </text>
       )}
 
