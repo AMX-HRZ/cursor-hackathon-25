@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { RepairOption, useRepair } from "@/context/RepairContext";
 import { useRepairHistory } from "@/hooks/useRepairHistory";
+import { compositeImageWithOverlay } from "@/lib/imageCompositor";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -208,26 +209,53 @@ export default function ResultPage() {
 
     setIsSaving(true);
 
-    // Simulate saving animation
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      // Save to localStorage via hook
+      const selectedOption = analysisData.options[selectedOptionIndex];
+      const profit = selectedOption.value_increase - selectedOption.cost;
+      const snakePoints = Math.round(selectedOption.value_increase * 1.5);
 
-    // Save to localStorage via hook
-    const selectedOption = analysisData.options[selectedOptionIndex];
-    const profit = selectedOption.value_increase - selectedOption.cost;
-    const snakePoints = Math.round(selectedOption.value_increase * 1.5);
+      // Composite image with overlay
+      const compositeImage = await compositeImageWithOverlay(
+        capturedImage,
+        selectedOption.coordinates,
+        selectedOption.type,
+        640,
+        480
+      );
 
-    saveRepair({
-      img: capturedImage,
-      profit: profit,
-      optionName: selectedOption.name,
-      snakePoints: snakePoints,
-      fabric: analysisData.fabric,
-      technique: selectedOption.type,
-    });
+      saveRepair({
+        img: compositeImage, // Save composite image with overlay
+        profit: profit,
+        optionName: selectedOption.name,
+        snakePoints: snakePoints,
+        fabric: analysisData.fabric,
+        technique: selectedOption.type,
+      });
 
-    setIsSaving(false);
-    setSaved(true);
-    setShowDialog(true);
+      setIsSaving(false);
+      setSaved(true);
+      setShowDialog(true);
+    } catch (error) {
+      console.error("Failed to save repair:", error);
+      setIsSaving(false);
+      // Fallback: save without overlay
+      const selectedOption = analysisData.options[selectedOptionIndex];
+      const profit = selectedOption.value_increase - selectedOption.cost;
+      const snakePoints = Math.round(selectedOption.value_increase * 1.5);
+
+      saveRepair({
+        img: capturedImage,
+        profit: profit,
+        optionName: selectedOption.name,
+        snakePoints: snakePoints,
+        fabric: analysisData.fabric,
+        technique: selectedOption.type,
+      });
+
+      setSaved(true);
+      setShowDialog(true);
+    }
   };
 
   const handleDialogClose = () => {
