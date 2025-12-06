@@ -1,7 +1,7 @@
 "use client";
 
+import { RepairOption } from "@/app/api/analyze/route";
 import { Button } from "@/components/ui/button";
-import { RepairOption } from "@/context/RepairContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
@@ -271,7 +271,7 @@ export default function OutsourceView({
                   {/* Scale */}
                   <div className="absolute bottom-2 left-2 text-[#666] text-[8px]">
                     <div className="flex items-center gap-1">
-                      <div className="w-8 h-[1px] bg-[#666]" />
+                      <div className="w-8 h-px bg-[#666]" />
                       <span>1km</span>
                     </div>
                   </div>
@@ -308,8 +308,8 @@ export default function OutsourceView({
                       onClick={() => setSelectedVendor(vendor.id)}
                       className={`w-full p-3 border text-left transition-all ${
                         selectedVendor === vendor.id
-                          ? "bg-[#124191] border-[#00ff00]"
-                          : "bg-[#1a1a1a] border-[#333] hover:border-[#666]"
+                          ? "bg-nokia-blue border-[#00ff00]"
+                          : "bg-tech-black border-[#333] hover:border-[#666]"
                       }`}
                     >
                       <div className="flex items-center justify-between">
@@ -391,7 +391,7 @@ export default function OutsourceView({
             >
               <div className="nokia-border bg-[#0a0a0a] p-8 w-full max-w-md">
                 {/* File Transfer Dialog */}
-                <div className="border border-[#333] bg-[#1a1a1a] p-4 mb-4">
+                <div className="border border-[#333] bg-tech-black p-4 mb-4">
                   <div className="text-[#00ffff] text-xs mb-4 flex items-center gap-2">
                     <span className="animate-pulse">📡</span>
                     INFRARED DATA TRANSFER
@@ -492,7 +492,7 @@ export default function OutsourceView({
                   DROP-OFF WINDOW OPEN
                 </div>
 
-                <div className="bg-[#1a1a1a] border border-[#333] p-4 mb-6 text-left">
+                <div className="bg-tech-black border border-[#333] p-4 mb-6 text-left">
                   <div className="text-[#00ffff] text-xs mb-2">
                     CONFIRMATION
                   </div>
@@ -520,7 +520,7 @@ export default function OutsourceView({
 
                 <Button
                   onClick={onClose}
-                  className="w-full nokia-button bg-[#124191] hover:bg-[#00ffff] hover:text-[#0a0a0a] text-white py-4"
+                  className="w-full nokia-button bg-nokia-blue hover:bg-[#00ffff] hover:text-[#0a0a0a] text-white py-4"
                 >
                   DONE
                 </Button>
@@ -529,7 +529,6 @@ export default function OutsourceView({
           )}
         </AnimatePresence>
       </div>
-
     </motion.div>
   );
 }

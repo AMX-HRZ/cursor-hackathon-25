@@ -1,6 +1,6 @@
 "use client";
 
-import { RepairOption } from "@/context/RepairContext";
+import { RepairOption } from "@/app/api/analyze/route";
 import { useEffect, useState } from "react";
 
 /**

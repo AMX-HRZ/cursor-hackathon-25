@@ -1,8 +1,7 @@
 "use client";
 
-import React from "react";
-import Image from "next/image";
 import SnakeOverlay from "@/components/overlays/SnakeOverlay";
+import Image from "next/image";
 
 interface Coordinate {
   x: number;
@@ -26,7 +25,9 @@ export default function RepairView({
     <div className="nokia-border bg-[#0a0a0a] p-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-3 text-xs">
-        <span className="text-[#00ffff] tracking-widest">▣ AR REPAIR PREVIEW</span>
+        <span className="text-[#00ffff] tracking-widest">
+          ▣ AR REPAIR PREVIEW
+        </span>
         <span className="text-[#666]">{difficulty}</span>
       </div>
 
@@ -42,11 +43,7 @@ export default function RepairView({
         />
 
         {/* Snake Stitch Overlay */}
-        <SnakeOverlay
-          coordinates={coordinates}
-          animated={true}
-          glowIntensity="high"
-        />
+        <SnakeOverlay coordinates={coordinates} animated={true} />
 
         {/* Viewfinder Corners */}
         <div className="absolute inset-0 pointer-events-none">
@@ -90,7 +87,9 @@ export default function RepairView({
 
       {/* Instructions */}
       <div className="mt-4 pt-4 border-t border-[#333]">
-        <div className="text-[#124191] text-xs mb-2 tracking-wider">REPAIR INSTRUCTIONS:</div>
+        <div className="text-[#124191] text-xs mb-2 tracking-wider">
+          REPAIR INSTRUCTIONS:
+        </div>
         <ol className="text-[#B0B0B0] text-xs space-y-1 list-decimal list-inside">
           <li>Thread needle with matching color thread</li>
           <li>Start at the marked &quot;S&quot; point</li>
@@ -102,4 +101,3 @@ export default function RepairView({
     </div>
   );
 }
-
