@@ -1,6 +1,5 @@
 "use client";
 
-import { AnalysisData } from "@/context/RepairContext";
 import { motion } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -15,8 +14,20 @@ import { QRCodeSVG } from "qrcode.react";
  * Animates: Slides up from bottom when displayed
  */
 
+/** Passport-specific data structure */
+interface PassportData {
+  fabric: string;
+  damageType: string;
+  repairTechnique: string;
+  snakeScore: number;
+  marketValueRepaired: number;
+  difficulty: string;
+  timestamp: string;
+  analysisId: string;
+}
+
 interface DigitalPassportProps {
-  analysisData: AnalysisData;
+  analysisData: PassportData;
   imageSrc: string;
   onClose: () => void;
 }
@@ -151,15 +162,15 @@ export default function DigitalPassport({
                 </span>
               </div>
               <div className="bg-[#1a1a1a] border border-[#333] p-2">
-                <span className="text-[#666] block">DAMAGE</span>
+                <span className="text-[#666] block">DIFFICULTY</span>
                 <span className="text-[#ffaa00] uppercase">
-                  {analysisData.damageType}
+                  {analysisData.difficulty}
                 </span>
               </div>
               <div className="bg-[#1a1a1a] border border-[#333] p-2">
                 <span className="text-[#666] block">VALUE</span>
                 <span className="text-[#00ffff]">
-                  ${analysisData.marketValueRepaired}
+                  +${analysisData.marketValueRepaired}
                 </span>
               </div>
             </div>

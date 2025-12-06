@@ -1,38 +1,57 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 
-// Analysis data structure from AI
+// ============================================
+// TYPE DEFINITIONS
+// ============================================
+
+/** Single repair option with cost/value analysis */
+export interface RepairOption {
+  id: number;
+  name: string;
+  description: string;
+  type: "basic" | "trend" | "cyber";
+  cost: number;
+  value_increase: number;
+  time: number;
+  difficulty: "LOW" | "MED" | "HIGH";
+  coordinates: Array<{ x: number; y: number }>;
+}
+
+/** Analysis data structure from API */
 export interface AnalysisData {
   fabric: string;
   damageType: string;
-  repairTechnique: string;
-  marketValueOriginal: number;
-  marketValueRepaired: number;
-  // Computed fields
-  valueIncrease: number;
-  valueIncreasePercent: number;
-  // Repair visualization data
-  coordinates: Array<{ x: number; y: number }>;
-  snakeScore: number;
-  difficulty: string;
+  options: RepairOption[];
   timestamp: string;
   analysisId: string;
 }
 
+/** Context state and actions */
 interface RepairContextType {
   // State
   capturedImage: string | null;
   analysisData: AnalysisData | null;
   isAnalyzing: boolean;
   error: string | null;
-  
+
   // Actions
   setCapturedImage: (image: string | null) => void;
   setAnalysisData: (data: AnalysisData | null) => void;
   startAnalysis: (image: string) => Promise<AnalysisData>;
   clearSession: () => void;
 }
+
+// ============================================
+// CONTEXT SETUP
+// ============================================
 
 const RepairContext = createContext<RepairContextType | undefined>(undefined);
 
@@ -42,40 +61,37 @@ export function RepairProvider({ children }: { children: ReactNode }) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const startAnalysis = useCallback(async (image: string): Promise<AnalysisData> => {
-    setIsAnalyzing(true);
-    setError(null);
-    setCapturedImage(image);
+  const startAnalysis = useCallback(
+    async (image: string): Promise<AnalysisData> => {
+      setIsAnalyzing(true);
+      setError(null);
+      setCapturedImage(image);
 
-    try {
-      const response = await fetch("/api/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image }),
-      });
+      try {
+        const response = await fetch("/api/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image }),
+        });
 
-      if (!response.ok) {
-        throw new Error(`Analysis failed: ${response.statusText}`);
+        if (!response.ok) {
+          throw new Error(`Analysis failed: ${response.statusText}`);
+        }
+
+        const data: AnalysisData = await response.json();
+        setAnalysisData(data);
+        return data;
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Unknown error";
+        setError(errorMessage);
+        throw err;
+      } finally {
+        setIsAnalyzing(false);
       }
-
-      const data: AnalysisData = await response.json();
-      
-      // Compute derived values
-      data.valueIncrease = data.marketValueRepaired - data.marketValueOriginal;
-      data.valueIncreasePercent = data.marketValueOriginal > 0 
-        ? Math.round((data.valueIncrease / data.marketValueOriginal) * 100)
-        : 0;
-
-      setAnalysisData(data);
-      return data;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Unknown error";
-      setError(errorMessage);
-      throw err;
-    } finally {
-      setIsAnalyzing(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   const clearSession = useCallback(() => {
     setCapturedImage(null);
@@ -111,4 +127,3 @@ export function useRepair() {
 }
 
 export default RepairContext;
-
