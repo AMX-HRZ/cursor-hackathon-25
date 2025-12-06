@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 /**
  * SnakeOverlay - Isolated SVG drawing logic for repair stitch visualization
- * 
+ *
  * This component handles ONLY the visual representation of the snake stitch pattern.
- * Keep business logic separate for easy pattern modifications.
+ * Features CSS keyframe animation using stroke-dasharray for "drawing" effect.
  */
 
 interface Coordinate {
@@ -42,44 +42,20 @@ export default function SnakeOverlay({
   showNodes = true,
   strokeWidth = 3,
 }: SnakeOverlayProps) {
-  const [visibleSegments, setVisibleSegments] = useState(0);
-  const [isComplete, setIsComplete] = useState(false);
-
-  // Animation effect
-  useEffect(() => {
-    if (!animated) {
-      setVisibleSegments(coordinates.length);
-      setIsComplete(true);
-      return;
-    }
-
-    setVisibleSegments(0);
-    setIsComplete(false);
-
-    let currentSegment = 0;
-    const interval = setInterval(() => {
-      currentSegment++;
-      setVisibleSegments(currentSegment);
-
-      if (currentSegment >= coordinates.length) {
-        clearInterval(interval);
-        setIsComplete(true);
-      }
-    }, 80);
-
-    return () => clearInterval(interval);
-  }, [coordinates.length, animated]);
+  const pathRef = useRef<SVGPathElement>(null);
+  const [pathLength, setPathLength] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(animated);
+  const [animationComplete, setAnimationComplete] = useState(!animated);
 
   // Generate smooth bezier curve path
-  const generatePath = (coords: Coordinate[], segments: number): string => {
-    if (coords.length < 2 || segments < 2) return "";
+  const path = useMemo(() => {
+    if (coordinates.length < 2) return "";
 
-    const visibleCoords = coords.slice(0, segments);
-    let path = `M ${visibleCoords[0].x} ${visibleCoords[0].y}`;
+    let pathD = `M ${coordinates[0].x} ${coordinates[0].y}`;
 
-    for (let i = 1; i < visibleCoords.length; i++) {
-      const prev = visibleCoords[i - 1];
-      const curr = visibleCoords[i];
+    for (let i = 1; i < coordinates.length; i++) {
+      const prev = coordinates[i - 1];
+      const curr = coordinates[i];
 
       // Calculate control points for smooth curve
       const midX = (prev.x + curr.x) / 2;
@@ -95,17 +71,45 @@ export default function SnakeOverlay({
         const perpX = (-dy / len) * waveOffset;
         const perpY = (dx / len) * waveOffset;
 
-        path += ` Q ${midX + perpX} ${midY + perpY} ${curr.x} ${curr.y}`;
+        pathD += ` Q ${midX + perpX} ${midY + perpY} ${curr.x} ${curr.y}`;
       } else {
-        path += ` L ${curr.x} ${curr.y}`;
+        pathD += ` L ${curr.x} ${curr.y}`;
       }
     }
 
-    return path;
-  };
+    return pathD;
+  }, [coordinates]);
+
+  // Calculate path length for stroke-dasharray animation
+  useEffect(() => {
+    if (pathRef.current) {
+      const length = pathRef.current.getTotalLength();
+      setPathLength(length);
+    }
+  }, [path]);
+
+  // Handle animation completion
+  useEffect(() => {
+    if (!animated) {
+      setAnimationComplete(true);
+      return;
+    }
+
+    setIsAnimating(true);
+    setAnimationComplete(false);
+
+    // Animation duration matches the CSS animation
+    const animationDuration = 2000; // 2 seconds
+    const timer = setTimeout(() => {
+      setAnimationComplete(true);
+      setIsAnimating(false);
+    }, animationDuration);
+
+    return () => clearTimeout(timer);
+  }, [animated, coordinates]);
 
   // Generate stitch marks
-  const generateStitchMarks = (coords: Coordinate[], segments: number) => {
+  const stitchMarks = useMemo(() => {
     const marks: Array<{
       x1: number;
       y1: number;
@@ -115,11 +119,9 @@ export default function SnakeOverlay({
       my: number;
     }> = [];
 
-    const visibleCoords = coords.slice(0, segments);
-
-    for (let i = 0; i < visibleCoords.length - 1; i++) {
-      const curr = visibleCoords[i];
-      const next = visibleCoords[i + 1];
+    for (let i = 0; i < coordinates.length - 1; i++) {
+      const curr = coordinates[i];
+      const next = coordinates[i + 1];
 
       const dx = next.x - curr.x;
       const dy = next.y - curr.y;
@@ -145,13 +147,17 @@ export default function SnakeOverlay({
     }
 
     return marks;
-  };
+  }, [coordinates]);
 
-  const path = generatePath(coordinates, visibleSegments);
-  const stitchMarks = generateStitchMarks(coordinates, visibleSegments);
   const glowConfig = GLOW_CONFIGS[glowIntensity];
 
   if (coordinates.length < 2) return null;
+
+  // Unique ID for this instance to avoid CSS conflicts
+  const instanceId = useMemo(
+    () => `snake-${Math.random().toString(36).substr(2, 9)}`,
+    []
+  );
 
   return (
     <svg
@@ -163,7 +169,13 @@ export default function SnakeOverlay({
     >
       <defs>
         {/* Glow filter */}
-        <filter id="snakeGlow" x="-100%" y="-100%" width="300%" height="300%">
+        <filter
+          id={`${instanceId}-glow`}
+          x="-100%"
+          y="-100%"
+          width="300%"
+          height="300%"
+        >
           <feGaussianBlur stdDeviation={glowConfig.blur} result="blur" />
           <feMerge>
             <feMergeNode in="blur" />
@@ -172,34 +184,49 @@ export default function SnakeOverlay({
         </filter>
 
         {/* Animated dash pattern */}
-        <linearGradient id="snakeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <linearGradient
+          id={`${instanceId}-gradient`}
+          x1="0%"
+          y1="0%"
+          x2="100%"
+          y2="0%"
+        >
           <stop offset="0%" stopColor={color} stopOpacity="0.8" />
           <stop offset="50%" stopColor="#00ffff" stopOpacity="1" />
           <stop offset="100%" stopColor={color} stopOpacity="0.8" />
         </linearGradient>
       </defs>
 
-      {/* Background glow layer */}
-      {isComplete && (
+      {/* Background glow layer - only show when animation complete */}
+      {animationComplete && (
         <path
           d={path}
           fill="none"
           stroke={color}
           strokeWidth={strokeWidth * 4}
           opacity={glowConfig.opacity}
-          filter="url(#snakeGlow)"
+          filter={`url(#${instanceId}-glow)`}
         />
       )}
 
-      {/* Main stitch path */}
+      {/* Main stitch path with snake drawing animation */}
       <path
+        ref={pathRef}
         d={path}
         fill="none"
-        stroke="url(#snakeGradient)"
+        stroke={`url(#${instanceId}-gradient)`}
         strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="transition-all duration-100"
+        style={
+          isAnimating && pathLength > 0
+            ? {
+                strokeDasharray: pathLength,
+                strokeDashoffset: pathLength,
+                animation: `${instanceId}-draw 2s ease-out forwards`,
+              }
+            : {}
+        }
       />
 
       {/* Center highlight */}
@@ -209,12 +236,18 @@ export default function SnakeOverlay({
         stroke="#ffffff"
         strokeWidth={1}
         strokeLinecap="round"
-        opacity={0.4}
+        opacity={animationComplete ? 0.4 : 0}
+        className="transition-opacity duration-500"
       />
 
-      {/* Stitch marks */}
+      {/* Stitch marks - fade in after animation */}
       {stitchMarks.map((mark, index) => (
-        <g key={`stitch-${index}`}>
+        <g
+          key={`stitch-${index}`}
+          opacity={animationComplete ? 1 : 0}
+          className="transition-opacity duration-300"
+          style={{ transitionDelay: `${index * 50}ms` }}
+        >
           {/* Stitch line */}
           <line
             x1={mark.x1}
@@ -251,39 +284,44 @@ export default function SnakeOverlay({
       ))}
 
       {/* Start marker */}
-      {visibleSegments > 0 && (
-        <g>
-          <circle
-            cx={coordinates[0].x}
-            cy={coordinates[0].y}
-            r={10}
-            fill="#0a0a0a"
-            stroke={color}
-            strokeWidth={2}
-          />
-          <text
-            x={coordinates[0].x}
-            y={coordinates[0].y + 4}
-            textAnchor="middle"
-            fill={color}
-            fontSize="10"
-            fontFamily="monospace"
-            fontWeight="bold"
-          >
-            S
-          </text>
-        </g>
-      )}
+      <g
+        opacity={animationComplete ? 1 : 0.5}
+        className="transition-opacity duration-300"
+      >
+        <circle
+          cx={coordinates[0].x}
+          cy={coordinates[0].y}
+          r={10}
+          fill="#0a0a0a"
+          stroke={color}
+          strokeWidth={2}
+        />
+        <text
+          x={coordinates[0].x}
+          y={coordinates[0].y + 4}
+          textAnchor="middle"
+          fill={color}
+          fontSize="10"
+          fontFamily="monospace"
+          fontWeight="bold"
+        >
+          S
+        </text>
+      </g>
 
-      {/* End marker (snake head) */}
-      {isComplete && coordinates.length > 1 && (
-        <g className="animate-pulse">
+      {/* End marker (snake head) - pulses when complete */}
+      {coordinates.length > 1 && (
+        <g
+          className={animationComplete ? "animate-pulse" : ""}
+          opacity={animationComplete ? 1 : 0}
+          style={{ transition: "opacity 0.5s ease-out" }}
+        >
           <circle
             cx={coordinates[coordinates.length - 1].x}
             cy={coordinates[coordinates.length - 1].y}
             r={12}
             fill={color}
-            filter="url(#snakeGlow)"
+            filter={`url(#${instanceId}-glow)`}
           />
           {/* Eyes */}
           <circle
@@ -302,7 +340,7 @@ export default function SnakeOverlay({
       )}
 
       {/* Progress indicator during animation */}
-      {animated && !isComplete && (
+      {isAnimating && (
         <text
           x={width / 2}
           y={height - 30}
@@ -312,10 +350,23 @@ export default function SnakeOverlay({
           fontFamily="monospace"
           className="animate-pulse"
         >
-          GENERATING REPAIR PATH... {Math.round((visibleSegments / coordinates.length) * 100)}%
+          GENERATING REPAIR PATH...
         </text>
       )}
+
+      {/* CSS Keyframes for stroke-dashoffset animation */}
+      <style>
+        {`
+          @keyframes ${instanceId}-draw {
+            0% {
+              stroke-dashoffset: ${pathLength};
+            }
+            100% {
+              stroke-dashoffset: 0;
+            }
+          }
+        `}
+      </style>
     </svg>
   );
 }
-
