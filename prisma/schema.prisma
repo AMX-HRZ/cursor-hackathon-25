@@ -15,8 +15,8 @@ model Repair {
   damageType  String
   repairStyle String
   snakeScore  Int      @default(0)
-  imageData   String? // Base64 encoded image
-  coordinates String? // JSON string of repair coordinates
+  imageData   String?  // Base64 encoded image
+  coordinates String?  // JSON string of repair coordinates
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

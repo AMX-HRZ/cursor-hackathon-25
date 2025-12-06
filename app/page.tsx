@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const [showStart, setShowStart] = useState(false);
@@ -57,13 +57,11 @@ export default function Home() {
               <span className="text-[#B0B0B0] text-xs">CONNECTED</span>
             </div>
             <div className="text-[#666] text-xs">
-              {new Date()
-                .toLocaleDateString("en-US", {
-                  weekday: "short",
-                  month: "short",
-                  day: "numeric",
-                })
-                .toUpperCase()}
+              {new Date().toLocaleDateString("en-US", {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+              }).toUpperCase()}
             </div>
           </div>
         </div>
@@ -101,8 +99,7 @@ export default function Home() {
                   className={
                     index === bootSequence && index < bootMessages.length - 1
                       ? "text-[#ffaa00]"
-                      : index < bootSequence ||
-                        index === bootMessages.length - 1
+                      : index < bootSequence || index === bootMessages.length - 1
                       ? "text-[#00ff00]"
                       : "text-[#666]"
                   }

@@ -1,61 +1,43 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import SnakeOverlay from "@/components/SnakeOverlay";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-
-interface AnalysisResult {
-  fabric: string;
-  damageType: string;
-  coordinates: Array<{ x: number; y: number }>;
-  repairType: string;
-  difficulty: string;
-  snakeScore: number;
-}
+import { useRepair } from "@/context/RepairContext";
+import RepairView from "@/components/results/RepairView";
+import BusinessCard from "@/components/results/BusinessCard";
 
 export default function ResultPage() {
   const router = useRouter();
-  const [capturedImage, setCapturedImage] = useState<string | null>(null);
-  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
+  const { capturedImage, analysisData, clearSession } = useRepair();
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
 
+  // Redirect if no data
   useEffect(() => {
-    // Load data from sessionStorage
-    const image = sessionStorage.getItem("capturedImage");
-    const result = sessionStorage.getItem("analysisResult");
-
-    if (!image || !result) {
+    if (!capturedImage || !analysisData) {
       router.push("/scan");
-      return;
     }
-
-    setCapturedImage(image);
-    setAnalysisResult(JSON.parse(result));
-  }, [router]);
+  }, [capturedImage, analysisData, router]);
 
   const handleSaveToWardrobe = async () => {
-    if (!analysisResult) return;
+    if (!analysisData) return;
 
     setIsSaving(true);
 
     // Simulate saving to database
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    // In a real app, you'd save to the database here
+    // In production, save to Prisma here
     // await fetch('/api/repairs', { method: 'POST', body: JSON.stringify({...}) })
 
     setIsSaving(false);
@@ -64,15 +46,18 @@ export default function ResultPage() {
   };
 
   const handleNewScan = () => {
-    sessionStorage.removeItem("capturedImage");
-    sessionStorage.removeItem("analysisResult");
+    clearSession();
     router.push("/scan");
   };
 
-  if (!capturedImage || !analysisResult) {
+  // Loading state
+  if (!capturedImage || !analysisData) {
     return (
       <main className="min-h-screen flex items-center justify-center">
-        <div className="text-[#00ff00] text-xl animate-pulse">LOADING...</div>
+        <div className="text-center">
+          <div className="text-[#00ff00] text-xl animate-pulse mb-4">LOADING...</div>
+          <div className="text-[#666] text-sm">Retrieving analysis data</div>
+        </div>
       </main>
     );
   }
@@ -103,134 +88,72 @@ export default function ResultPage() {
         </div>
       </header>
 
-      {/* Main Content */}
+      {/* Main Content - Two Column Layout */}
       <div className="flex-1 grid lg:grid-cols-2 gap-6">
-        {/* Image with Snake Overlay */}
-        <div className="nokia-border bg-[#0a0a0a] p-4">
-          <div className="text-[#00ffff] text-sm mb-3 tracking-widest">
-            ▣ REPAIR PREVIEW
-          </div>
-          <div className="relative aspect-[4/3] bg-black overflow-hidden">
-            <Image
-              src={capturedImage}
-              alt="Captured fabric"
-              fill
-              className="object-cover pixelated"
-            />
-            <SnakeOverlay
-              coordinates={analysisResult.coordinates}
-              animated={true}
-            />
+        {/* Left Column - Repair Visualization */}
+        <RepairView
+          imageSrc={capturedImage}
+          coordinates={analysisData.coordinates}
+          repairTechnique={analysisData.repairTechnique}
+          difficulty={analysisData.difficulty}
+        />
 
-            {/* Viewfinder corners */}
-            <div className="viewfinder-corner viewfinder-corner-tl" />
-            <div className="viewfinder-corner viewfinder-corner-tr" />
-            <div className="viewfinder-corner viewfinder-corner-bl" />
-            <div className="viewfinder-corner viewfinder-corner-br" />
-          </div>
+        {/* Right Column - Business Data & Actions */}
+        <div className="space-y-6">
+          {/* Business Card - Value Analysis */}
+          <BusinessCard
+            scrapValue={analysisData.marketValueOriginal}
+            upcycledValue={analysisData.marketValueRepaired}
+            fabric={analysisData.fabric}
+            damageType={analysisData.damageType}
+          />
 
-          {/* Legend */}
-          <div className="mt-4 flex items-center justify-center gap-6 text-xs">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-1 bg-[#00ff00]" />
-              <span className="text-[#B0B0B0]">STITCH PATH</span>
+          {/* Analysis Details */}
+          <div className="nokia-border bg-[#0a0a0a] p-4">
+            <div className="text-[#00ffff] text-sm mb-3 tracking-widest">▣ REPAIR DETAILS</div>
+            <div className="grid grid-cols-2 gap-4 text-xs">
+              <div className="bg-[#1a1a1a] border border-[#333] p-3">
+                <span className="text-[#666] block mb-1">TECHNIQUE</span>
+                <span className="text-[#00ff00]">{analysisData.repairTechnique}</span>
+              </div>
+              <div className="bg-[#1a1a1a] border border-[#333] p-3">
+                <span className="text-[#666] block mb-1">STITCHES</span>
+                <span className="text-[#00ff00]">{analysisData.coordinates.length - 1}</span>
+              </div>
+              <div className="bg-[#1a1a1a] border border-[#333] p-3">
+                <span className="text-[#666] block mb-1">DIFFICULTY</span>
+                <span className="text-[#ffaa00]">{analysisData.difficulty}</span>
+              </div>
+              <div className="bg-[#1a1a1a] border border-[#333] p-3">
+                <span className="text-[#666] block mb-1">SNAKE SCORE</span>
+                <span className="text-[#00ffff]">{analysisData.snakeScore} ★</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-[#00ff00]" />
-              <span className="text-[#B0B0B0]">SNAKE HEAD</span>
-            </div>
           </div>
-        </div>
-
-        {/* Analysis Results */}
-        <div className="space-y-4">
-          {/* Fabric Info Card */}
-          <Card className="nokia-border bg-[#0a0a0a] border-none">
-            <CardHeader className="border-b border-[#333] pb-3">
-              <CardTitle className="text-[#00ffff] text-sm tracking-widest">
-                ▣ FABRIC ANALYSIS
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-4 space-y-3">
-              <div className="flex justify-between">
-                <span className="text-[#666]">MATERIAL:</span>
-                <span className="text-[#00ff00]">{analysisResult.fabric}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#666]">DAMAGE:</span>
-                <span className="text-[#ffaa00]">{analysisResult.damageType}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#666]">DIFFICULTY:</span>
-                <span className="text-[#00ffff]">{analysisResult.difficulty}</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Repair Info Card */}
-          <Card className="nokia-border bg-[#0a0a0a] border-none">
-            <CardHeader className="border-b border-[#333] pb-3">
-              <CardTitle className="text-[#00ffff] text-sm tracking-widest">
-                ▣ REPAIR PLAN
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-4 space-y-3">
-              <div className="flex justify-between">
-                <span className="text-[#666]">METHOD:</span>
-                <span className="text-[#00ff00]">{analysisResult.repairType}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#666]">STITCHES:</span>
-                <span className="text-[#00ff00]">{analysisResult.coordinates.length - 1}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-[#666]">SNAKE SCORE:</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[#00ff00] text-xl">{analysisResult.snakeScore}</span>
-                  <span className="text-[#ffaa00]">★</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Instructions Card */}
-          <Card className="nokia-border bg-[#1a1a1a] border-none">
-            <CardContent className="pt-4">
-              <div className="text-[#124191] text-xs mb-2">REPAIR INSTRUCTIONS:</div>
-              <ol className="text-[#B0B0B0] text-xs space-y-1 list-decimal list-inside">
-                <li>Thread needle with matching color</li>
-                <li>Start at marked &quot;S&quot; point</li>
-                <li>Follow the snake path shown</li>
-                <li>Use running stitch technique</li>
-                <li>Secure end at snake head</li>
-              </ol>
-            </CardContent>
-          </Card>
 
           {/* Action Buttons */}
           <div className="space-y-3">
             <Dialog open={showDialog} onOpenChange={setShowDialog}>
-              <DialogTrigger asChild>
-                <Button
-                  onClick={handleSaveToWardrobe}
-                  disabled={isSaving || saved}
-                  className="w-full nokia-button bg-[#124191] hover:bg-[#00ffff] hover:text-[#0a0a0a] text-white py-6 text-lg tracking-widest"
-                >
-                  {isSaving ? (
-                    <span className="flex items-center gap-2">
-                      <span className="animate-spin">◐</span> SAVING...
-                    </span>
-                  ) : saved ? (
-                    <span className="flex items-center gap-2">
-                      ✓ SAVED TO WARDROBE
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-2">
-                      💾 SAVE TO WARDROBE
-                    </span>
-                  )}
-                </Button>
-              </DialogTrigger>
+              <Button
+                onClick={handleSaveToWardrobe}
+                disabled={isSaving || saved}
+                className="w-full nokia-button bg-[#124191] hover:bg-[#00ffff] hover:text-[#0a0a0a] text-white py-6 text-lg tracking-widest"
+              >
+                {isSaving ? (
+                  <span className="flex items-center gap-2">
+                    <span className="animate-spin">◐</span> SAVING...
+                  </span>
+                ) : saved ? (
+                  <span className="flex items-center gap-2">
+                    ✓ SAVED TO WARDROBE
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    💾 SAVE TO WARDROBE
+                  </span>
+                )}
+              </Button>
+
               <DialogContent className="nokia-border bg-[#0a0a0a] border-[#333]">
                 <DialogHeader>
                   <DialogTitle className="text-[#00ff00] text-center text-2xl">
@@ -243,7 +166,10 @@ export default function ResultPage() {
                 <div className="text-center py-4">
                   <div className="text-6xl mb-4">🐍</div>
                   <div className="text-[#00ffff] text-xl mb-2">
-                    SNAKE SCORE: {analysisResult.snakeScore}
+                    SNAKE SCORE: {analysisData.snakeScore}
+                  </div>
+                  <div className="text-[#00ff00] text-lg mb-2">
+                    VALUE INCREASE: +${analysisData.marketValueRepaired - analysisData.marketValueOriginal}
                   </div>
                   <div className="text-[#666] text-xs">
                     KEEP REPAIRING TO INCREASE YOUR SCORE!
@@ -273,7 +199,7 @@ export default function ResultPage() {
       <footer className="mt-6 nokia-border bg-[#0a0a0a] p-4">
         <div className="flex items-center justify-between text-xs">
           <div className="text-[#666]">
-            <span className="text-[#124191]">MEND-AR</span> v3.31.0
+            <span className="text-[#124191]">ID:</span> {analysisData.analysisId}
           </div>
           <Link href="/" className="text-[#00ffff] hover:text-[#00ff00]">
             ◀ MAIN MENU
@@ -283,4 +209,3 @@ export default function ResultPage() {
     </main>
   );
 }
-
