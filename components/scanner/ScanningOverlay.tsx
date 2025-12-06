@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Progress } from "@/components/ui/progress";
+import SnakeLoader from "@/components/ui/SnakeLoader";
+import { useEffect, useState } from "react";
 
 interface ScanningOverlayProps {
   isActive: boolean;
@@ -22,7 +22,10 @@ const SCAN_MESSAGES = [
   { text: "ANALYSIS COMPLETE!", duration: 400 },
 ];
 
-export default function ScanningOverlay({ isActive, onComplete }: ScanningOverlayProps) {
+export default function ScanningOverlay({
+  isActive,
+  onComplete,
+}: ScanningOverlayProps) {
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [completedMessages, setCompletedMessages] = useState<string[]>([]);
@@ -47,7 +50,10 @@ export default function ScanningOverlay({ isActive, onComplete }: ScanningOverla
 
     let messageIndex = 0;
     let totalElapsed = 0;
-    const totalDuration = SCAN_MESSAGES.reduce((sum, msg) => sum + msg.duration, 0);
+    const totalDuration = SCAN_MESSAGES.reduce(
+      (sum, msg) => sum + msg.duration,
+      0
+    );
 
     const advanceMessage = () => {
       if (messageIndex >= SCAN_MESSAGES.length) {
@@ -57,7 +63,7 @@ export default function ScanningOverlay({ isActive, onComplete }: ScanningOverla
 
       const currentMsg = SCAN_MESSAGES[messageIndex];
       setCurrentMessageIndex(messageIndex);
-      
+
       setTimeout(() => {
         setCompletedMessages((prev) => [...prev, currentMsg.text]);
         totalElapsed += currentMsg.duration;
@@ -77,7 +83,7 @@ export default function ScanningOverlay({ isActive, onComplete }: ScanningOverla
   return (
     <div className="fixed inset-0 z-50 bg-[#0a0a0a]/95 flex items-center justify-center">
       {/* Scan grid background */}
-      <div 
+      <div
         className="absolute inset-0 opacity-10"
         style={{
           backgroundImage: `
@@ -87,14 +93,14 @@ export default function ScanningOverlay({ isActive, onComplete }: ScanningOverla
           backgroundSize: "20px 20px",
         }}
       />
-      
+
       {/* Scan beam animation */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div 
+        <div
           className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#00ff00] to-transparent opacity-50"
           style={{
             animation: "scanBeam 2s ease-in-out infinite",
-            top: `${(progress % 100)}%`,
+            top: `${progress % 100}%`,
           }}
         />
       </div>
@@ -105,37 +111,39 @@ export default function ScanningOverlay({ isActive, onComplete }: ScanningOverla
         <div className="flex items-center justify-between mb-6 border-b border-[#333] pb-4">
           <div className="flex items-center gap-3">
             <div className="w-3 h-3 bg-[#00ff00] animate-pulse" />
-            <span className="text-[#00ff00] text-sm tracking-widest">MEND-AR SCANNER</span>
+            <span className="text-[#00ff00] text-sm tracking-widest">
+              MEND-AR SCANNER
+            </span>
           </div>
           <span className="text-[#666] text-xs">v3.31.0</span>
         </div>
 
-        {/* ASCII Art Scanner */}
-        <div className="text-center mb-6 text-[#00ff00] opacity-60">
-          <pre className="text-xs leading-tight inline-block">
-{`    ╔══════════════════╗
-    ║  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓  ║
-    ║  ▓  SCANNING   ▓  ║
-    ║  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓  ║
-    ╚══════════════════╝`}
-          </pre>
+        {/* Snake Game Loader */}
+        <div className="mb-6">
+          <SnakeLoader message={currentMessage?.text || "PROCESSING..."} />
         </div>
 
-        {/* Terminal Output */}
-        <div className="bg-[#1a1a1a] border border-[#333] p-4 mb-6 h-48 overflow-hidden font-mono">
-          <div className="space-y-1 text-xs">
-            {completedMessages.map((msg, index) => (
+        {/* Terminal Output - Compact */}
+        <div className="bg-[#1a1a1a] border border-[#333] p-3 mb-4 h-24 overflow-hidden font-mono">
+          <div className="space-y-0.5 text-[10px]">
+            {completedMessages.slice(-4).map((msg, index) => (
               <div key={index} className="flex items-center gap-2">
                 <span className="text-[#124191]">&gt;</span>
-                <span className="text-[#00ff00]">{msg}</span>
+                <span className="text-[#00ff00] truncate">{msg}</span>
                 <span className="text-[#00ff00] ml-auto">✓</span>
               </div>
             ))}
             {currentMessageIndex < SCAN_MESSAGES.length && (
               <div className="flex items-center gap-2">
                 <span className="text-[#124191]">&gt;</span>
-                <span className="text-[#ffaa00]">{currentMessage?.text}</span>
-                <span className={`text-[#ffaa00] ${showCursor ? "opacity-100" : "opacity-0"}`}>
+                <span className="text-[#ffaa00] truncate">
+                  {currentMessage?.text}
+                </span>
+                <span
+                  className={`text-[#ffaa00] ${
+                    showCursor ? "opacity-100" : "opacity-0"
+                  }`}
+                >
                   _
                 </span>
               </div>
@@ -183,11 +191,15 @@ export default function ScanningOverlay({ isActive, onComplete }: ScanningOverla
 
       <style jsx>{`
         @keyframes scanBeam {
-          0%, 100% { transform: translateY(-100vh); }
-          50% { transform: translateY(100vh); }
+          0%,
+          100% {
+            transform: translateY(-100vh);
+          }
+          50% {
+            transform: translateY(100vh);
+          }
         }
       `}</style>
     </div>
   );
 }
-

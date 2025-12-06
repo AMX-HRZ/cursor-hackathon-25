@@ -3,6 +3,7 @@
 import DynamicOverlay from "@/components/overlays/DynamicOverlay";
 import BusinessCard from "@/components/results/BusinessCard";
 import DigitalPassport from "@/components/results/DigitalPassport";
+import OutsourceView from "@/components/results/OutsourceView";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -183,6 +184,7 @@ export default function ResultPage() {
   const [saved, setSaved] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [showPassport, setShowPassport] = useState(false);
+  const [showOutsource, setShowOutsource] = useState(false);
   const [overlayKey, setOverlayKey] = useState(0);
 
   // Redirect if no data
@@ -210,6 +212,10 @@ export default function ResultPage() {
 
   const handleExportToMarket = () => {
     setShowPassport(true);
+  };
+
+  const handleOutsource = () => {
+    setShowOutsource(true);
   };
 
   const handleNewScan = () => {
@@ -406,6 +412,17 @@ export default function ResultPage() {
                 </span>
               </Button>
 
+              {/* Outsource to Vendor */}
+              <Button
+                onClick={handleOutsource}
+                variant="outline"
+                className="w-full nokia-button bg-[#1a1a1a] border-[#ffaa00] text-[#ffaa00] hover:bg-[#ffaa00] hover:text-[#0a0a0a] py-6 text-lg tracking-widest"
+              >
+                <span className="flex items-center gap-2">
+                  🏪 OUTSOURCE TO VENDOR
+                </span>
+              </Button>
+
               <Button
                 onClick={handleNewScan}
                 variant="outline"
@@ -447,6 +464,17 @@ export default function ResultPage() {
             }}
             imageSrc={capturedImage}
             onClose={() => setShowPassport(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Outsource View Overlay */}
+      <AnimatePresence>
+        {showOutsource && (
+          <OutsourceView
+            imageSrc={capturedImage}
+            selectedOption={selectedOption}
+            onClose={() => setShowOutsource(false)}
           />
         )}
       </AnimatePresence>
