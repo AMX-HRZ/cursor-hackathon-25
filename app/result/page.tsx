@@ -67,7 +67,7 @@ export default function ResultPage() {
   return (
     <main className="min-h-screen flex flex-col p-4">
       {/* Header */}
-      <header className="nokia-border bg-[#0a0a0a] p-4 mb-6">
+      <header className="nokia-border bg-[#0a0a0a] p-4 mb-6 shrink-0">
         <div className="flex items-center justify-between">
           <Link href="/scan">
             <Button
@@ -91,7 +91,7 @@ export default function ResultPage() {
       </header>
 
       {/* Main Content - Two Column Layout */}
-      <div className="flex-1 grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-6">
         {/* Left Column - Repair Visualization */}
         <RepairView
           imageSrc={capturedImage}
@@ -210,7 +210,7 @@ export default function ResultPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-6 nokia-border bg-[#0a0a0a] p-4">
+      <footer className="mt-6 nokia-border bg-[#0a0a0a] p-4 shrink-0">
         <div className="flex items-center justify-between text-xs">
           <div className="text-[#666]">
             <span className="text-[#124191]">ID:</span>{" "}

@@ -9,17 +9,17 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-retro);
   --font-mono: var(--font-retro);
-  
+
   /* Nokia-inspired color palette */
   --color-nokia-blue: #124191;
   --color-matrix-green: #00ff00;
   --color-screen-bg: #1a1a1a;
-  --color-retro-gray: #B0B0B0;
+  --color-retro-gray: #b0b0b0;
   --color-nokia-cyan: #00ffff;
   --color-nokia-amber: #ffaa00;
   --color-lcd-green: #9bbc0f;
   --color-lcd-dark: #0f380f;
-  
+
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -66,7 +66,7 @@
   --primary: #124191;
   --primary-foreground: #ffffff;
   --secondary: #1a1a1a;
-  --secondary-foreground: #B0B0B0;
+  --secondary-foreground: #b0b0b0;
   --muted: #2a2a2a;
   --muted-foreground: #666666;
   --accent: #00ffff;
@@ -101,12 +101,18 @@
 }
 
 @keyframes flicker {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.98; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.98;
+  }
 }
 
 @keyframes textGlow {
-  0%, 100% {
+  0%,
+  100% {
     text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00;
   }
   50% {
@@ -115,13 +121,20 @@
 }
 
 @keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
 }
 
 .crt-screen {
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .crt-screen::before {
@@ -174,25 +187,17 @@
 /* Nokia-style borders */
 .nokia-border {
   border: 3px solid #333;
-  box-shadow: 
-    inset 2px 2px 0 #4a4a4a,
-    inset -2px -2px 0 #1a1a1a,
-    4px 4px 0 #000;
+  box-shadow: inset 2px 2px 0 #4a4a4a, inset -2px -2px 0 #1a1a1a, 4px 4px 0 #000;
 }
 
 .nokia-button {
   border: 2px solid #555;
-  box-shadow: 
-    inset 1px 1px 0 #666,
-    inset -1px -1px 0 #222,
-    2px 2px 0 #000;
+  box-shadow: inset 1px 1px 0 #666, inset -1px -1px 0 #222, 2px 2px 0 #000;
   transition: all 0.1s;
 }
 
 .nokia-button:active {
-  box-shadow: 
-    inset -1px -1px 0 #666,
-    inset 1px 1px 0 #222;
+  box-shadow: inset -1px -1px 0 #666, inset 1px 1px 0 #222;
   transform: translate(2px, 2px);
 }
 
